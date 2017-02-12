@@ -12,6 +12,9 @@ adm.savePkgLib <- function(){
   packages <- installed.packages()[,"Package"]
   save(packages,
        file="C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate/Rpackages")
+  if(file.exists("C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate/Rpackages")){
+    print("Package lib successfully backed up")
+  }
 }
 
 #' Reload packages after upgrade
@@ -25,4 +28,6 @@ adm.restorePkgLib <- function(){
   load("C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate/Rpackages")
   for (p in setdiff(packages, installed.packages()[,"Package"]))
     install.packages(p)
+  # An option should be added to delete the temporary package library
+  # if the above goes successfully.
 }

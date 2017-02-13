@@ -19,14 +19,14 @@ pValT <- function(pDiff, sE, pAlpha = 0.95, pTails = 2){
   if (pTails != 2)
   {pTails <- 1
   #p-Value
-  pVal <- (1-pnorm(abs(tRat)))*2
+  pVal <- (1-pnorm(abs(tRat)))
 
   # critical value
   critVal <- qnorm(pAlpha)
   } else{
     # If 2-tailed:
     # p-value
-    pVal <- (1-pnorm(abs(tRat)))
+    pVal <- (1-pnorm(abs(tRat)))*2
 
     # critical value
     critVal <- qnorm(pAlpha + (1-pAlpha)/2)

@@ -8,11 +8,11 @@
 #' @export
 adm.savePkgLib <- function(){
 
-  dir.create("C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate")
+  dir.create("C:/Users/jlight/Downloads/RPkgUpdate")
   packages <- installed.packages()[,"Package"]
   save(packages,
-       file="C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate/Rpackages")
-  if(file.exists("C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate/Rpackages")){
+       file="C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")
+  if(file.exists("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")){
     print("Package lib successfully backed up")
   }
 }
@@ -25,7 +25,7 @@ adm.savePkgLib <- function(){
 #'
 #' @export
 adm.restorePkgLib <- function(){
-  load("C:/Users/jlight.ORI-EUG/Downloads/RPkgUpdate/Rpackages")
+  load("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")
   for (p in setdiff(packages, installed.packages()[,"Package"]))
     install.packages(p)
   # An option should be added to delete the temporary package library

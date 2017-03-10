@@ -1,14 +1,14 @@
 Package: JMLUtils
 Type: Package
 Title: Wrappers for R administration, general statistics, data management
-Version: 0.101.0
+Version: 0.101.1
 Authors@R: person("John", "Light", email = "jlight@ori.org",
     role = c("aut", "cre"))
 Description: Wraps procedures for R administration (e.g. saving and restoring
     one's personal package lib before and after an upgrade to a new version
-    of R), statistics (a T-test calculator that also gives p-values and 
-    confidence limits), and data management. 
+    of R), statistics (a T-test calculator that also gives p-values and
+    confidence limits), and data management.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1

@@ -17,3 +17,4 @@ If you saved your package library before upgrading R
    using 'savePkgLib', you then do the upgrade, and restore
    the package library with this function.
 }
+

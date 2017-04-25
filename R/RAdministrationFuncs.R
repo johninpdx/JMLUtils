@@ -7,18 +7,19 @@
 #'
 #' @export
 adm.savePkgLib <- function(){
-  dir.create("C:/Users/jlight/Downloads/RPkgUpdate")
+  savedPkgs <- "C:/Users/jlight/AppData/RPkgUpdate/Rpackages"
+  dir.create("C:/Users/jlight/AppData/RPkgUpdate")
   # If an old update exists,
-  if(file.exists("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")){
+  if(file.exists(savedPkgs)){
     cat("An old package lib is here already; renaming it to B4<today>...\n")
-    file.rename("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages",
-                paste("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages.B4.",
+    file.rename(savedPkgs,
+                paste(savedPkgs, ".B4.",
                       as.character(Sys.Date()), sep=""))
   }
   packages <- installed.packages()[,"Package"]
   save(packages,
-       file="C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")
-  if(file.exists("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")){
+       file=savedPkgs)
+  if(file.exists(savedPkgs)){
     cat("Package lib successfully backed up\n")
   }
 }
@@ -31,9 +32,18 @@ adm.savePkgLib <- function(){
 #'
 #' @export
 adm.restorePkgLib <- function(){
-  load("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")
-  for (p in setdiff(packages, installed.packages()[,"Package"]))
-    install.packages(p)
-  # An option should be added to delete the temporary package library
+  savedPkgs <- "C:/Users/jlight/AppData/RPkgUpdate/Rpackages"
+  savedPkgsDir <- "C:/Users/jlight/AppData/RPkgUpdate"
+
+  if(file.exists(savedPkgs)){
+    load(savedPkgs)
+    for (p in setdiff(packages, installed.packages()[,"Package"]))
+      install.packages(p)
+  } else {
+    cat("*Rpackages* does not exist in\n", savedPkgsDir,
+        "\n Restore could not be completed...")
+  }
+
+  # An option might be added to delete the temporary package library
   # if the above goes successfully.
 }

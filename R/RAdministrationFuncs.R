@@ -7,13 +7,19 @@
 #'
 #' @export
 adm.savePkgLib <- function(){
-
   dir.create("C:/Users/jlight/Downloads/RPkgUpdate")
+  # If an old update exists,
+  if(file.exists("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")){
+    cat("An old package lib is here already; renaming it to B4<today>...\n")
+    file.rename("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages",
+                paste("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages.B4.",
+                      as.character(Sys.Date()), sep=""))
+  }
   packages <- installed.packages()[,"Package"]
   save(packages,
        file="C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")
   if(file.exists("C:/Users/jlight/Downloads/RPkgUpdate/Rpackages")){
-    print("Package lib successfully backed up")
+    cat("Package lib successfully backed up\n")
   }
 }
 

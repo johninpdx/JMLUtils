@@ -22,4 +22,3 @@ A vector with three values: the t-ratio, the two-tailed p-value, and
 \description{
 Calculates t, 2-tailed p value, pAlpha CI
 }
-

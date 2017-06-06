@@ -7,8 +7,9 @@
 #'
 #' @export
 adm.savePkgLib <- function(){
-  savedPkgs <- "C:/Users/jlight/AppData/RPkgUpdate/Rpackages"
-  dir.create("C:/Users/jlight/AppData/RPkgUpdate")
+  savedPkgs <- paste(folderLocation(), "Rpackages", sep="")
+
+  dir.create(folderLocation())
   # If an old update exists,
   if(file.exists(savedPkgs)){
     cat("An old package lib is here already; renaming it to B4<today>...\n")
@@ -32,8 +33,8 @@ adm.savePkgLib <- function(){
 #'
 #' @export
 adm.restorePkgLib <- function(){
-  savedPkgs <- "C:/Users/jlight/AppData/RPkgUpdate/Rpackages"
-  savedPkgsDir <- "C:/Users/jlight/AppData/RPkgUpdate"
+  savedPkgs <- paste(folderLocation(), "Rpackages", sep="")
+  savedPkgsDir <- folderLocation()
 
   if(file.exists(savedPkgs)){
     load(savedPkgs)
@@ -46,4 +47,25 @@ adm.restorePkgLib <- function(){
 
   # An option might be added to delete the temporary package library
   # if the above goes successfully.
+}
+
+#' Determines the folder loc on this machine for reading/writing
+#'
+#' @details This function is used to determine where the R package
+#'    backup should be written, and where to retrieve it from.
+#' @return A string describing a folder location, specific to the
+#'    current machine.
+#' @export
+folderLocation <- function(){
+  machineName <- Sys.info()['nodename']
+  if(machineName == "JLIGHTWIN7") {
+    folderLoc <- "L:/Software/RPkgUpdate/"
+    return(folderLoc)
+  }
+  if(machineName == "JLIGHTWIN7HOME"){
+    folderLoc <- "C:/Users/jlight/AppData/RPkgUpdate/"
+    return(folderLoc)
+  }
+  cat("Computer name not found; must add to JMLUtils code!\n")
+  return(" ")
 }

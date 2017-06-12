@@ -41,3 +41,55 @@ pValT <- function(pDiff, sE, pAlpha = 0.95, pTails = 2){
   cat("Conf Interval for alpha of", pAlpha, "= (",
       ciAlpha[1], ",", ciAlpha[2],")")
 }
+
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#     Two sienaGOF functions that are not included in RSiena or RSienaTest
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+# >> GeodesicDistribution <<
+#______________________________________________________________________________
+#' Calculates geodesic distribution stats for sienaGOF
+#'
+#' For details see ?sna::geodist
+#' @note The default for \code{levls} reflects that geodesic distances
+#' larger than 5 do not differ appreciably with respect to interpretation.
+#' @note Levels of the result are named, and used in the \code{plot} method
+#' @export
+GeodesicDistribution <- function (i, data, sims, period, groupName,
+                                  varName, levls=c(1:5,Inf),
+                                  cumulative=TRUE, ...) {
+#' @import sna
+  x <- networkExtraction(i, data, sims, period, groupName, varName)
+  require(sna)
+  a <- sna::geodist(symmetrize(x))$gdist
+  if (cumulative)
+  {
+    gdi <- sapply(levls, function(i){ sum(a<=i) })
+  }
+  else
+  {
+    gdi <- sapply(levls, function(i){ sum(a==i) })
+  }
+  names(gdi) <- as.character(levls)
+  gdi
+}
+
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#  >> TriadCensus <<
+#______________________________________________________________________________
+#' Holland and Leinhardt Triad Census; see ?sna::triad.census.
+#'
+#' @export
+TriadCensus <- function(i, data, sims, wave, groupName, varName, levls=1:16){
+#'@import sna
+  unloadNamespace("igraph") # to avoid package clashes
+  require(sna)
+  require(network)
+  x <- networkExtraction(i, data, sims, wave, groupName, varName)
+  if (network.edgecount(x) <= 0){x <- symmetrize(x)}
+  # because else triad.census(x) will lead to an error
+  tc <- sna::triad.census(x)[1,levls]
+  # triad names are transferred automatically
+  tc
+}

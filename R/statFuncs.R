@@ -1,4 +1,21 @@
 # FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+# >> betaDiffZ <<
+#______________________________________________________________________________
+#' Z score and 2-tailed p of the difference between two regression betas
+#'
+#' @param b1 A regression coefficient
+#' @param b2 A regression coefficient
+#' @param seb1 The standard error of b1
+#' @param seb2 The standard error of b2
+#'
+#' @return Prints Z and 2-tailed p value to the console
+#' @export
+betaDiffZ <- function(b1, b2, seb1, seb2){
+  zDiff <- (b1-b2)/((seb1^2 + seb2^2)^0.5)
+  cat("Z =", zDiff, "  2-tailed p=", 2*(1-pnorm(zDiff)))
+}
+
+# FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 # >> pValT <<
 # FFFFFFFFFFFF
 #' Calculates t, 2-tailed p value, pAlpha CI

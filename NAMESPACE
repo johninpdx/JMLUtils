@@ -3,4 +3,5 @@
 export("%w/o%")
 export(adm.restorePkgLib)
 export(adm.savePkgLib)
+export(folderLocation)
 export(pValT)

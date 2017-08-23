@@ -1,4 +1,4 @@
-# RAdministrationFunc.R
+# RAdministrationFuncs.R
 #' Save existing package library to a temporary file.
 #' @details When upgrading your R version, run this first
 #'    to save your existing package library. It can be
@@ -72,4 +72,30 @@ folderLocation <- function(){
   }
   cat("Computer name not found; must add to JMLUtils code!\n")
   return(" ")
+}
+
+#' Changes library location for package installation
+#'
+#' @details Wrapper for the R function .libPaths
+#' @return A message with the new library location to be used for installation
+#' @export
+changePkgLibLocation <- function(){
+  currentLoc <- .libPaths()[1]
+  cat("Current default package location:\n", "  ", currentLoc, "\n")
+  cat("If you want to change it, select a different folder...\n")
+  newLoc <- choose.dir(default = currentLoc,
+                       caption = "...or CANCEL, to not change anything:")
+  if(is.na(newLoc)){
+    newLoc <- currentLoc
+  }
+  # Fix slashes to be consistent with .libPaths format
+  newLoc <- gsub("\\", "/", newLoc, fixed = TRUE)
+
+  if(currentLoc == newLoc){
+    cat ("\n Default package location IS UNCHANGED:\n", currentLoc)
+  }
+  if(currentLoc != newLoc){
+    .libPaths(newLoc)
+    cat("\n Default package location CHANGED to:\n", newLoc)
+  }
 }

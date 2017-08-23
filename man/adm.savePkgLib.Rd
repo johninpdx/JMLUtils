@@ -17,3 +17,8 @@ When upgrading your R version, run this first
    to save your existing package library. It can be
    restored after the upgrade.
 }
+\note{
+It is not necessary to do this for minor upgrades, i.e. the 'x'
+   in '3.4.x'; you only need to do so if your version changes in one
+   of the first two positions, i.e. the 'x' in x.4.2, or 3.x.1...
+}

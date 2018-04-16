@@ -11,7 +11,7 @@
 #' @return Prints Z and 2-tailed p value to the console
 #' @export
 betaDiffZ <- function(b1, b2, seb1, seb2){
-  zDiff <- (b1-b2)/((seb1^2 + seb2^2)^0.5)
+  zDiff <- abs(b1-b2)/((seb1^2 + seb2^2)^0.5)
   cat("Z =", zDiff, "  2-tailed p=", 2*(1-pnorm(zDiff)))
 }
 

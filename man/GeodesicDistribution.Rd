@@ -4,8 +4,8 @@
 \alias{GeodesicDistribution}
 \title{Calculates geodesic distribution stats for sienaGOF}
 \usage{
-GeodesicDistribution(i, data, sims, period, groupName, varName, levls = c(1:5,
-  Inf), cumulative = TRUE, ...)
+GeodesicDistribution(i, data, sims, period, groupName, varName,
+  levls = c(1:5, Inf), cumulative = TRUE, ...)
 }
 \description{
 For details see ?sna::geodist

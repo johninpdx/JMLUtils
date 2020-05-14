@@ -27,8 +27,8 @@ setupEmail <- function(){
 #' Requires running 'setupEmail' first. This function is called after some
 #' other code runs, or whenever you like.
 #'
-#' @param pw John's secret password
-#' @param subj A string with the desired subject line
+#' @param subj Character string: the desired subject line
+#' @param msg Character string: the desired message
 #'
 #' @return Nothing. It just sends the Email
 #' @export

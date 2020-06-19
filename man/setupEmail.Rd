@@ -2,17 +2,37 @@
 % Please edit documentation in R/email.R
 \name{setupEmail}
 \alias{setupEmail}
-\title{Setup auto-sending an Email after some other code runs
-(only works for John's Gmail account, for now. Maybe generalized
-someday).}
+\title{Setup auto-sending an Email after some other code runs}
 \usage{
-setupEmail()
+setupEmail(gmailAcct)
+}
+\arguments{
+\item{gmailAcct}{Character string containing the name of the gmail account
+to send the Email from (sorry, this function can only send from gmail
+accounts at the moment). Do not include the '@gmail.com' part; it is
+assumed, and added automatically in the function code.}
 }
 \value{
 A list containing [[1]] the text message body, [[2]] credential key
 }
 \description{
 Setup auto-sending an Email after some other code runs
-(only works for John's Gmail account, for now. Maybe generalized
-someday).
+}
+\details{
+You will be prompted for your Gmail account password when you run
+ this function in a new session. After you have provided it, you do not
+ need to rerun this setup function again within the same session. All it's
+ doing is setting up a security key to access your gmail account. \cr \cr
+    In addition, you will need to go into your Gmail account and set it
+ to accept remote operation. To do this, go to
+     'myaccount.google.com/security', or
+ click on your picture (if you're signed into, say, Chrome with your Gmail
+ account) to get to your 'myaccount' page. Then click on 'security' in the
+ list of options to the left of the window, and scroll down to 'less
+ secure app access', and turn this ON. Gmail will squawk, but you must do
+ this or these functions will not work!
+}
+\examples{
+  setupEmail("mygmailacct")
+
 }

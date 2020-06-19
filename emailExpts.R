@@ -30,3 +30,10 @@ txtmsg %>%
 keyring::key_set_with_value(service = "gmail",
                             username = "johninsepdx@gmail.com",
                             password = "2s$uYpL$e#qT%WP5d!^jj0RLo28aI7")
+
+
+setupEmail("johninsepdx")
+sendEmail(gmailAcct="johninsepdx",
+          subj="Test of v110.1",
+          msg="Whee, it worked!!",
+          sendToEmail="jlight@ori.org")

@@ -2,14 +2,22 @@
 % Please edit documentation in R/email.R
 \name{sendEmail}
 \alias{sendEmail}
-\title{Send an email (for now, just from John's Gmail account)}
+\title{Send an email from a gmail account}
 \usage{
-sendEmail(subj, msg)
+sendEmail(gmailAcct, subj, msg, sendToEmail)
 }
 \arguments{
-\item{subj}{A string with the desired subject line}
+\item{gmailAcct}{Character string containing the name of the gmail account
+to send the Email from (the same account you used in 'setupEmail'). DO
+NOT include the '@gmail.com' part, just the account up to there.}
 
-\item{pw}{John's secret password}
+\item{subj}{Character string: the desired subject line}
+
+\item{msg}{Character string: the desired message}
+
+\item{sendToEmail}{Character string with the recipient Email (e.g.,
+"smith@smithsdomain.com", etc.). Unlike, 'gmailAcct', here you have to
+specify the entire Email, i.e. including the @whatever.xxx part.}
 }
 \value{
 Nothing. It just sends the Email
@@ -17,4 +25,14 @@ Nothing. It just sends the Email
 \description{
 Requires running 'setupEmail' first. This function is called after some
 other code runs, or whenever you like.
+}
+\examples{
+  setupEmail ("mygmailacct")
+  # Notice that "mygmailacct" must be the same one used when you
+  # ran 'setupEmail'
+  sendEmail(gmailAcct="mygmailacct",
+            subj="Your model is done",
+            msg="V.10.1 model completed",
+            sendToEmail="anyoldEmail@whatever.com")
+
 }

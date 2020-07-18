@@ -1,5 +1,5 @@
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-# >> setupEmail <<
+# >> setupGmail <<
 #______________________________________________________________________________
 #' Setup auto-sending an Email after some other code runs
 #'
@@ -22,25 +22,24 @@
 #'  assumed, and added automatically in the function code.
 #'
 #' @examples
-#'   setupEmail("mygmailacct")
+#'   setupGmail("mygmailacct")
 #'
 #' @return A list containing [[1]] the text message body, [[2]] credential key
 #' @export
-setupEmail <- function(gmailAcct){
+setupGmail <- function(gmailAcct){
   #' @import blastula
   #' @import keyring
   #This will ask for your gmail password
   credKey <- create_smtp_creds_key(
     id="gmail",
     user=paste0(gmailAcct, "@gmail.com"),
-    provider="gmail",
-    overwrite=TRUE
+    provider="gmail"
   )
-  cat("Ready to send; use 'sendEmail' to do so.")
+  cat("Ready to send; use 'sendGmail' to do so.")
 }
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-# >> sendEmail <<
+# >> sendGmail <<
 #______________________________________________________________________________
 #' Send an email from a gmail account
 #'
@@ -57,17 +56,17 @@ setupEmail <- function(gmailAcct){
 #'   specify the entire Email, i.e. including the @whatever.xxx part.
 #'
 #' @examples
-#'   setupEmail ("mygmailacct")
+#'   setupGmail ("mygmailacct")
 #'   # Notice that "mygmailacct" must be the same one used when you
 #'   # ran 'setupEmail'
-#'   sendEmail(gmailAcct="mygmailacct",
+#'   sendGmail(gmailAcct="mygmailacct",
 #'             subj="Your model is done",
 #'             msg="V.10.1 model completed",
 #'             sendToEmail="anyoldEmail@whatever.com")
 #'
 #' @return Nothing. It just sends the Email
 #' @export
-sendEmail <- function(gmailAcct, subj, msg, sendToEmail){
+sendGmail <- function(gmailAcct, subj, msg, sendToEmail){
   #' @import blastula
   #' @import keyring
   txtmsg <- compose_email(

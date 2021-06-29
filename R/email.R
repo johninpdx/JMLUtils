@@ -33,7 +33,8 @@ setupGmail <- function(gmailAcct){
   credKey <- create_smtp_creds_key(
     id="gmail",
     user=paste0(gmailAcct, "@gmail.com"),
-    provider="gmail"
+    provider="gmail",
+    overwrite = TRUE
   )
   cat("Ready to send; use 'sendGmail' to do so.")
 }

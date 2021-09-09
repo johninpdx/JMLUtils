@@ -6,6 +6,9 @@
 \usage{
 x \%w/o\% y
 }
+\value{
+A vector or list of elements in x that are not in y
+}
 \description{
 'Without' operator (complement of %in%):
 }

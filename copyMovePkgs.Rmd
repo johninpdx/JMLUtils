@@ -1,0 +1,49 @@
+---
+title: "Draft of Package Upgrade for New Major R Version"
+output: html_notebook
+---
+
+#Run this before you upgrade (or at least, before you kill your
+# old R user library)
+```{r}
+#Gets character vector of all installed package names 
+packs <- installed.packages()[,1] 
+#Write named character vector into .r file
+sink("packs2move.r", append=F, split=F)
+dput(packs)
+sink()
+```
+
+#After you're in the new installation, you need to reinstall all those
+#packages into the new R user library. This will take a while! 
+
+# Before you run this, be sure to upgrade your development tools, so
+# you'll be able to build all the packages in the new R version.
+# see here for doc:
+https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites
+# Basically if there is a new version of RTools, download and install from here:
+ https://cran.rstudio.com/bin/windows/Rtools/.
+#Then make sure it's on system PATH per doc recommendations 
+#I don't think you need devtools available in the new version to make this work, 
+# but you might. In that case, you'll need to install that first, manually, 
+# and then go from there. Check this link:
+https://www.r-project.org/nosvn/pandoc/devtools.html
+
+ 
+```{r}
+pax <- unlist(source("packs2move.r"))
+pax <- pax[1:length(pax)-1] #Removes extraneous list item
+install.packages(pax)
+```
+
+
+
+```{r}
+candidates <- c( Sys.getenv("R_PROFILE"),
+                 file.path(Sys.getenv("R_HOME"), "etc", "Rprofile.site"),
+                 Sys.getenv("R_PROFILE_USER"),
+                 file.path(getwd(), ".Rprofile") )
+
+Filter(file.exists, candidates)
+```
+

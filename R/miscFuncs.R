@@ -2,6 +2,7 @@
 #' 'Without' operator (complement of %in%):
 #' @details A binary operator, i.e. x %w/o% y (x and y vectors, or lists) gives
 #'    the elements of x that are NOT IN y.
+#' @return A vector or list of elements in x that are not in y
 #' @export
 "%w/o%" <- function(x,y) {x[!x %in% y]} #Bin operator, x NOT IN y (vectors)
 
@@ -47,3 +48,26 @@ inputSPSS <- function(pInput = ""){
     return(tbOut)
   }
 }
+
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+# >> wksp.size <<
+#______________________________________________________________________________
+#' Return the size of the workspace environment currently loaded
+#'
+#' This is usually the first function run when creating a network analysis.
+#'
+#' @return A number (size of current wksp in bytes).
+#'    Wide Format' means that each chooser has only 1 row per wave, and the
+#'    relationship choices directed to other house members are all contained
+#'    in that one row. The data.table is basically an image of the SPSS file
+#'    (.sav) that it reads.
+#' @export
+wksp.size <- function() {
+  ws <- sum(sapply(ls(envir=globalenv()), function(x)object.size(get(x))))
+  class(ws) <- "object_size"
+  ws
+}
+
+
+
+

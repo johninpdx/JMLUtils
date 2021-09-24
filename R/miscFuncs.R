@@ -50,6 +50,27 @@ inputSPSS <- function(pInput = ""){
 }
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#  >> setAllMissing <<
+#______________________________________________________________________________
+#' Converts missing values to NA, including 88 or 99 (if in network ID vars)
+#'
+#' @details This function works for survey and/or network data tables.
+#'
+#' @param pInTB The input tibble from the output of 'inputSPSS'
+#'
+#' @return The same tibble as was input, except that NaNs (in any vars)
+#'    and 88's or 99's (in network ID variables only, if there are any)
+#'    are all replaced with 'NA'
+#' @export
+setAllMissing <- function(pInTB){
+  #' @import dplyr
+  #'
+  pInTB[is.na(pInTB)] <- NA #Fixes the NaNs
+
+  pOutDT <- pInTB
+}
+
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 # >> wksp.size <<
 #______________________________________________________________________________
 #' Return the size of the workspace environment currently loaded

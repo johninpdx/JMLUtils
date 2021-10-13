@@ -3,12 +3,11 @@ title: "Draft of Package Upgrade for New Major R Version"
 output: html_notebook
 ---
 
-Run this *before you upgrade* (or at least, before you kill your
- old R user library). In the latter case, select the old version
- of R before running this chunk.
-Afterwards, fire up the new version of R, and DO NOT RERUN this
-chunk; rather, use the version of packs2move.r that you created
-from the earlier version. 
+Here is the procedure:
+1. With the old version of R running (either before you install the new
+   version, or after but selecting the old version in Tools/Project Options),
+   run this next chunk:
+
 ```{r}
 #Gets character vector of all installed package names 
 packs <- installed.packages()[,1] 
@@ -18,21 +17,18 @@ dput(packs)
 sink()
 ```
 
-After you're in the new installation, you need to reinstall all those
-packages into the new R user library. This will take a while! 
+2. Install (if necessary) and activate the new version of R. Normally the new
+   version will boot up automatically after it's installed, but you can also
+   manually select in in the Tools/Project Options menu).
 
- Before you run this, be sure to upgrade your development tools, so
- you'll be able to build all the packages in the new R version.
- see here for doc:
-https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites
- Basically if there is a new version of RTools, download and install from here:
- https://cran.rstudio.com/bin/windows/Rtools/.
-Then make sure it's on system PATH per doc recommendations 
-I don't think you need devtools available in the new version to make this work, 
- but you might. In that case, you'll need to install that first, manually, 
- and then go from there. Check this link:
-https://www.r-project.org/nosvn/pandoc/devtools.html
-
+3. Run the next chunk. This will install the packages in the new pkg lib
+   directory. 
+   a. In response to the offer to "restart R" because one of the packages is
+      already loaded, just say NO. 
+   b. When it offers to install from source and compile, say YES.
+   
+If there are a lot of packages, the recompliation process will take a good
+while to finish.
  
 ```{r}
 pax <- unlist(source("packs2move.r"))
@@ -50,4 +46,19 @@ candidates <- c( Sys.getenv("R_PROFILE"),
 
 Filter(file.exists, candidates)
 ```
+
+Additional Notes:
+
+If necessary (usually only if a major R upgrade, e.g. from v. 4.x to version 5.x
+ etc. be sure to upgrade your development tools, so
+ you'll be able to build all the packages in the new R version.
+ see here for doc:
+https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites
+ Basically if there is a new version of RTools, download and install from here:
+ https://cran.rstudio.com/bin/windows/Rtools/.
+Then make sure it's on system PATH per doc recommendations 
+I don't think you need devtools available in the new version to make this work, 
+ but you might. In that case, you'll need to install that first, manually, 
+ and then go from there. Check this link:
+https://www.r-project.org/nosvn/pandoc/devtools.html
 

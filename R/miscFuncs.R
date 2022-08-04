@@ -62,9 +62,9 @@ inputSPSS <- function(pInput = ""){
 #'    and 88's or 99's (in network ID variables only, if there are any)
 #'    are all replaced with 'NA'
 #' @export
-setAllMissing <- function(pInTB){
-  #' @import dplyr
-  #'
+  setAllMissing <- function(pInTB){
+#' @import dplyr
+#'
   pInTB[is.na(pInTB)] <- NA #Fixes the NaNs
 
   pOutDT <- pInTB

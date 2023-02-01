@@ -1,0 +1,17 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+PSQIScore
+```{r}
+xx <- readRDS("PSQRaw.rds")
+```
+
+```{r}
+yy <- PSQIScore(xx, wv = "2")
+```
+
+
+
+

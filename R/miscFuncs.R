@@ -89,6 +89,31 @@ wksp.size <- function() {
   ws
 }
 
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#  >> install.glmmADMB <<
+#______________________________________________________________________________
+#' Installs glmmADMB from source
+#'
+#' @description Installs glmmADMB package from source. This is needed
+#'   whenever a new version of R is released that requires an update
+#'   to the package library (viz. the "X" or "y" in version X.y.z).
+#'   (You cannot simply transfer the package using the adm.savePkgLib
+#'   and adm.restorePkgLib functions from this package)
+#' @details Be sure you have the new version of R installed and are using
+#'   it (if this is relevant) before running.
+#'
+#' @return Nothing. Simply installs the package in the default package lib.
+#' @export
+install.glmmADMB <- function(){
+  install.packages("R2admb")
+  install.packages("glmmADMB",
+                   repos=c("http://glmmadmb.r-forge.r-project.org/repos",
+                           getOption("repos")),
+                   type="source")
+}
+
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
 
 
 

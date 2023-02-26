@@ -10,10 +10,11 @@ adm.restorePkgLib()
 Nothing; just a message indicating completion
 }
 \description{
-Reload packages after upgrade
-}
-\details{
 If you saved your package library before upgrading R
    using 'savePkgLib', you then do the upgrade, and restore
    the package library with this function.
+}
+\details{
+>> DO NOT RUN THIS FUNCTION FROM RSTUDIO<. Run it from the
+ R GUI instead.
 }

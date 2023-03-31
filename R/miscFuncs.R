@@ -113,7 +113,89 @@ install.glmmADMB <- function(){
 }
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-
-
+#  >> find_var <<
+#______________________________________________________________________________
+#' Finds a variable in a data.frame by matching a pattern, etc.
+#'
+#' @description This functions finds variables in a data frame, which variable
+#'  names or variable (and value) label attribute match a specific pattern.
+#'  Regular expression for the pattern is supported. Copied from package
+#'  >sjmisc<, which has a lot of other useful functions of this general
+#'  type.
+#' @details This function searches for pattern in data's column names and
+#'  - for labelled data - in all variable and value labels of data's variables
+#'  (see sjmisc::get_label for details on variable labels and labelled data).
+#'  Regular expressions are supported as well, by simply using
+#'  pattern = stringr::regex(...) or regex = TRUE.
+#' @param data A dataframe with the variables of interest
+#' @param pattern A string with the pattern to look for, or a regular expression
+#' @param ignore.case Logical, TRUE => match irrespective of case.
+#' @param search A string indicating what to look for. Can be name_label,
+#'  name_value, label_value, name, or label. Default is name_label
+#' @param out A string requesting type of output; may be a table ("table"),
+#'  dataframe ("df"), or index ("index").
+#' @param fuzzy Logical, if TRUE use fuzzy grep.
+#' @param regex Logical, if TRUE pattern is a regex.
+#'
+#' @return A table, dataframe or index (see @out).
+#' @export
+find_var <- function (data, pattern, ignore.case = TRUE, search = c("name_label",
+                                                        "name_value", "label_value", "name", "label", "value", "all"),
+          out = c("table", "df", "index"), fuzzy = FALSE, regex = FALSE)
+{
+  if (!is.data.frame(data)) {
+    stop("`data` must be a data frame.", call. = FALSE)
+  }
+  search <- match.arg(search)
+  out <- match.arg(out)
+  if (regex)
+    class(pattern) <- c("regex", class(pattern))
+  pos1 <- pos2 <- pos3 <- c()
+  fixed <- !inherits(pattern, "regex")
+  if (.is_true(fixed))
+    ignore.case <- FALSE
+  if (search %in% c("name", "name_label", "name_value", "all")) {
+    pos1 <- which(grepl(pattern = pattern, x = colnames(data),
+                        ignore.case = ignore.case, fixed = fixed))
+    if (sjmisc::is_empty(pos1) && fuzzy && !inherits(pattern,
+                                                     "regex")) {
+      pos1 <- fuzzy_grep(x = colnames(data), pattern = pattern)
+    }
+  }
+  if (search %in% c("label", "name_label", "label_value", "all")) {
+    labels <- sjlabelled::get_label(data)
+    pos2 <- which(grepl(pattern, x = labels, ignore.case = ignore.case,
+                        fixed = fixed))
+    if (sjmisc::is_empty(pos2) && fuzzy && !inherits(pattern,
+                                                     "regex")) {
+      pos2 <- fuzzy_grep(x = labels, pattern = pattern)
+    }
+  }
+  if (search %in% c("value", "name_value", "label_value", "all")) {
+    labels <- sjlabelled::get_labels(data, attr.only = FALSE)
+    pos3 <- which(sapply(labels, function(.x) any(grepl(pattern,
+                                                        x = .x, ignore.case = ignore.case, fixed = fixed)),
+                         simplify = TRUE))
+    if (sjmisc::is_empty(pos3) && fuzzy && !inherits(pattern,
+                                                     "regex")) {
+      pos3 <- which(sapply(labels, function(.x) {
+        p <- fuzzy_grep(x = .x, pattern = pattern)
+        !sjmisc::is_empty(p[1])
+      }, simplify = TRUE))
+    }
+  }
+  pos <- unique(c(pos1, pos2, pos3))
+  pos <- pos[which(pos != -1)]
+  if (out == "df") {
+    return(data[, pos, drop = FALSE])
+  }
+  if (out == "table") {
+    return(data_frame(col.nr = pos, var.name = colnames(data)[pos],
+                      var.label = sjlabelled::get_label(data[, pos, drop = FALSE],
+                                                        def.value = colnames(data)[pos])))
+  }
+  names(pos) <- colnames(data)[pos]
+  pos
+}
 
 

@@ -73,8 +73,8 @@ folderLocation <- function(){
     folderLoc <- "C:/Users/jlight/AppData/RPkgUpdate/"
     return(folderLoc)
   }
-  if(machineName == "RSTAT"){
-    folderLoc <- "C:/Users/jlight.ORI-EUG/Desktop/RPkgUpdate/"
+  if(machineName == "JLIGHT-RSTAT2"){
+    folderLoc <- "C:/Users/jlight/Desktop/RPkgUpdate/"
     return(folderLoc)
   }
   cat("Computer name not found; must add to JMLUtils code!\n")

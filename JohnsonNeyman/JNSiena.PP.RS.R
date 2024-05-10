@@ -6,8 +6,10 @@ JNSiena <- function(siena07out, # siena07 output
                     thetaInt, # number of the interaction
                     theta1vals, # range of the statistics corresponding the 1st parameter
                     theta2vals,  # range for the statistics corresponding the 2nd parameter
-                    alpha = 0.05) { # significance range,
-                        #all p-values are automatically bonferroni holmes adjusted!!!
+                    sigRegion= TRUE, #Logical: calculate Region of Significance limits
+                    alpha = 0.05) # significance range,
+  #all p-values are automatically bonferroni holmes adjusted!!!
+{
   if (class(siena07out) != 'sienaFit') {
     stop('sienaout needs to be a sienaFit object created by siena07().')
   }
@@ -24,8 +26,12 @@ JNSiena <- function(siena07out, # siena07 output
   theta1n <- siena07out$effects$effectName[theta1]
   theta2n <- siena07out$effects$effectName[theta2]
 
-  #Vector of g1+g3 multiplied by each bespoke moderator (x2) value.
+  # =================================================
+  # theta1 is primary predictor, theta2 is moderator
+  # =================================================
+  # Vector of g1+g3 multiplied by each bespoke moderator (x2) value.
   theta1s <- siena07out$theta[theta1] + siena07out$theta[thetaInt] * theta2vals
+
   #For each bespoke value of x2 in 'theta2vals' (the moderator vals),
   # calculate the SE for the parameter g1 (the main predictor).
   # See eq.(13) in Bauer&Curran(2005). It's the SE of the 'simple slope' w1 of
@@ -47,7 +53,6 @@ JNSiena <- function(siena07out, # siena07 output
   # which the relationship between the primary predictor becomes
   # a significant predictor (e.g. of tie formation)...(and of course
   # you can designate either predictor as primary or moderator).
-  # Then you can
   p1 <- c()
   for (i in 1:length(theta2vals)) {
     #Trick to select the correct double-sided critical region
@@ -71,10 +76,45 @@ JNSiena <- function(siena07out, # siena07 output
                     thetap     = round(p1,3),
                     significance_adjusted = sig11)
 
-#-----------------------------------------------------------------
-#Same calc as above, except that now x2 is the primary predictor,
-# and x1 is the moderator
-#-----------------------------------------------------------------
+# ===================================================================
+# Calculate JN Region of Significance based on unajusted significance
+#   with theta1 as primary and theta2 as moderator
+# ===================================================================
+if(sigRegion){
+  mod <- siena07out
+  g1 <- mod$theta[theta1] #Beta: primary (ego)
+  g2 <- mod$theta[theta2] #Beta: moderator (alt)
+  g3 <- mod$theta[thetaInt] #Beta: interaction
+  g1Var <- mod$covtheta[theta1,theta1] #Var primary
+  g2Var <- mod$covtheta[theta2,theta2] #Var moderator
+  g3Var <- mod$covtheta[thetaInt,thetaInt] #Var (prim x mod)
+  g1g3Cov <-mod$covtheta[theta1,thetaInt] #Cov(prim, int)
+  tSq <- (qnorm((1-alpha) + (1-(1-alpha))/2))^2 #squared critical value (for alpha 2-tailed)
+
+# Calculate quadratic coefficients for x^2, x, and constant terms
+  acoeff <- (tSq*g3Var) - g3^2
+  bcoeff <- 2*((tSq*g1g3Cov) - (g1*g3))
+  ccoeff <- (tSq*g1Var) - g1^2
+
+# Will the equation have real roots?
+  isThisPos<-(bcoeff^2)-(4*acoeff*ccoeff) #If not, the equation has no real roots.
+  if(isThisPos<0){
+    cat(paste("When ", theta1n, " is primary, the significance region cannot be calculated (no real roots)."))
+    rootMin.1 <- NA
+    rootMax.1 <- NA}
+  else{
+    # Quadratic formula
+    rootPos.1 <- (-bcoeff + sqrt((bcoeff^2)-(4*acoeff*ccoeff)))/(2*acoeff)
+    rootNeg.1 <- (-bcoeff - sqrt((bcoeff^2)-(4*acoeff*ccoeff)))/(2*acoeff)
+    rootMin.1 <- min(rootPos.1, rootNeg.1)
+    rootMax.1 <- max(rootPos.1, rootNeg.1)
+  }
+}
+
+
+#=========================================================
+#theta2 is the primary predictor, theta1 is the moderator
+#=========================================================
   theta2s <- siena07out$theta[theta2] + siena07out$theta[thetaInt] * theta1vals
   seT2 <- sqrt(siena07out$covtheta[theta2,theta2] +
                  theta1vals * 2 * siena07out$covtheta[thetaInt,theta2] +
@@ -103,5 +143,50 @@ JNSiena <- function(siena07out, # siena07 output
                     theta_p    = round(p2,3),
                     significance_adjusted = sig22)
 
+  # ===================================================================
+  # Calculate JN Region of Significance based on unajusted significance
+  #   with theta2 as primary and theta1 as moderator
+  # ===================================================================
+if(sigRegion){
+  mod <- siena07out
+  g1 <- mod$theta[theta2] #Beta: primary (ego)
+  g2 <- mod$theta[theta1] #Beta: moderator (alt)
+  g3 <- mod$theta[thetaInt] #Beta: interaction
+  g1Var <- mod$covtheta[theta2,theta2] #Var primary
+  g2Var <- mod$covtheta[theta1,theta1] #Var moderator
+  g3Var <- mod$covtheta[thetaInt,thetaInt] #Var (prim x mod)
+  g1g3Cov <-mod$covtheta[theta2,thetaInt] #Cov(prim, int)
+  tSq <- (qnorm((1-alpha) + (1-(1-alpha))/2))^2 #squared critical value (for alpha 2-tailed)
+
+  # Calculate quadratic coefficients for x^2, x, and constant terms
+  acoeff <- (tSq*g3Var) - g3^2
+  bcoeff <- 2*((tSq*g1g3Cov) - (g1*g3))
+  ccoeff <- (tSq*g1Var) - g1^2
+
+  # Will the equation have real roots?
+  isThisPos<-(bcoeff^2)-(4*acoeff*ccoeff) #If it isn't, the equation has no real roots.
+  if(isThisPos<0){
+    cat(paste("When ", theta2n, " is primary, the significance region cannot be calculated (no real roots)."))
+    rootPos.2 <- NA
+    rootNeg.2 <- NA}
+  else{
+    # Quadratic formula
+    rootPos.2 <- (-bcoeff + sqrt((bcoeff^2)-(4*acoeff*ccoeff)))/(2*acoeff)
+    rootNeg.2 <- (-bcoeff - sqrt((bcoeff^2)-(4*acoeff*ccoeff)))/(2*acoeff)
+    # Order with min before max for clearer output
+    rootMin.2 <- min(rootPos.2, rootNeg.2)
+    rootMax.2 <- max(rootPos.2, rootNeg.2)
+  }
+
+  sigRegions <- data.frame(theta = c(theta1n, theta2n),
+                           moderator = c(theta2n, theta1n),
+                           modMins=c(rootMin.1, rootMin.2),
+                           modMaxes=c(rootMax.1, rootMax.2))
+  return(list(t1d, t2d, sigRegions))
+} else{
   return(list(t1d,t2d))
 }
+}
+
+
+

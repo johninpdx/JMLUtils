@@ -65,10 +65,6 @@ adm.restorePkgLib <- function(){
 #' @export
 folderLocation <- function(){
   machineName <- Sys.info()['nodename']
-  if(machineName == "JLIGHTWIN7") {
-    folderLoc <- "L:/Software/RPkgUpdate/"
-    return(folderLoc)
-  }
   if(machineName == "JLIGHTWIN7HOME"){
     folderLoc <- "C:/Users/jlight/AppData/RPkgUpdate/"
     return(folderLoc)

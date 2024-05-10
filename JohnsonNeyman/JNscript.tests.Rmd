@@ -1,0 +1,136 @@
+---
+title: "Investigate RK's JN code"
+output: html_notebook
+---
+
+
+```{r}
+load("V:Research/Papers/SOR.NSUTx/SUTx.w123456.RData")
+```
+
+```{r}
+save.image("V:Research/Papers/SOR.NSUTx/SUTx.w123456.RData")
+```
+
+```{r}
+packages <- c("data.table", "keyring", "blastula",
+              "tidyverse", "dtplyr", "naniar",
+              "network", "sna", "RHNetTools", "Matrix", "RSiena", 
+              "JMLUtils", "haven", "glue")
+if(length(setdiff(packages, rownames(installed.packages))) > 0) {
+  lapply(packages, library, character.only = TRUE)
+}
+# If necessary (RSienaTest is not on Cran):
+#install.packages("RSienaTest", repos="http://R-Forge.R-project.org")
+workingDir <- here::here()
+```
+
+
+```{r}
+Mod48<- readRDS("V:/Research/Papers/SOR.NSUTx/Mod48.RDS")
+```
+
+#Mod 48 (test model)
+```{r}
+print(Mod48)
+tM <- Mod48
+```
+
+RFEgo (12) is g1 (primary)
+RFAlt (11) is moderator (g2)
+RFEgo x RFAlt (13) is interac term
+
+NOTE: when you specify the covariance between g1 and g3, be sure it's above the diagonal
+so, the row should always be LESS THAN the column!!)
+#Ego (12) is primary, alt(11) is mod
+```{r}
+mod <- tM
+g1 <- mod$theta[12] #Beta: primary (ego)
+g2 <- mod$theta[11] #Beta: moderator (alt)
+g3 <- mod$theta[13] #Beta: interaction
+g1Var <- mod$covtheta[12,12] #Var primary
+g2Var <- mod$covtheta[11,11] #Var moderator
+g3Var <- mod$covtheta[13,13] #Var (prim x mod)
+g1g3Cov <-mod$covtheta[12,13] #Cov(prim, int)
+tSq <- 1.96*1.96 #squared critical value (for .05 2-tailed)
+```
+Calculate quadratic coefficients ac, bc, cc
+```{r}
+ax <- (tSq*g3Var) - g3^2
+bx <- 2*((tSq*g1g3Cov) - (g1*g3))
+cx <- (tSq*g1Var) - g1^2
+# Will the equation have real roots?
+isThisPos<-(bx^2)-(4*ax*cx) #If it isn't, the equation has no real roots.
+ax
+bx 
+cx
+```
+
+Quadratic formula
+```{r}
+rootPos.ep <- (-bx + sqrt((bx^2)-(4*ax*cx)))/(2*ax)
+rootNeg.ep <- (-bx - sqrt((bx^2)-(4*ax*cx)))/(2*ax)
+```
+
+rootPos.ep = -3.615 
+rootNeg.ep =  0.850 
+
+###Check ep eq roots.
+The equation is:
+$$f(e)= -0.03068*e^2 - 0.08484*e + 0.09425 = 0$$
+This calculation should be 0 for either 
+rootPos or rootNeg. Both are. 
+```{r}
+ax*(rootNeg.ep^2) + (bx*rootNeg.ep) + cx
+ax*(rootPos.ep^2) + (bx*rootPos.ep) + cx
+```
+###JNSiena on same model
+```{r}
+JNSiena(siena07out = tM,
+        theta1=12, #ego is primary in 1st dataframe
+        theta2=11, #alt is moderator in 1st dataframe
+        thetaInt = 13,
+        theta1vals = c(-3.7, 0.5, 0.6, 0.7, 0.8, 0.9,  1),
+        theta2vals = c(-3.7, 0.5, 0.6, 0.7, 0.8, 0.9,  1),
+        alpha=0.05
+        )
+```
+
+
+#Alt (11) is primary, ego (12) is mod
+RFAlt (11) is g1 (primary)
+RFEgo (12) is moderator (g2)
+RFEgo x RFAlt (13) is interac term
+```{r}
+mod <- tM
+g1 <- mod$theta[11] #Beta: primary (alt)
+g2 <- mod$theta[12] #Beta: moderator (ego)
+g3 <- mod$theta[13] #Beta: interaction
+g1Var <- mod$covtheta[11,11] #Var primary
+g2Var <- mod$covtheta[12,12] #Var moderator
+g3Var <- mod$covtheta[13,13] #Var (prim x mod)
+g1g3Cov <-mod$covtheta[11,13] #Cov(prim, int)
+tSq <- 1.96*1.96 #squared critical value (for .05 2-tailed)
+```
+Calculate quadratic coefficients ax, bx, cx
+```{r}
+ax <- (tSq*g3Var) - g3^2
+bx <- 2*((tSq*g1g3Cov) - (g1*g3))
+cx <- (tSq*g1Var) - g1^2
+# Will the equation have real roots?
+isThisPos<-(bx^2)-(4*ax*cx) #If it isn't, the equation has no real roots.
+ax
+bx 
+cx
+```
+
+Quadratic formula
+```{r}
+rootPos.ap <- (-bx + sqrt((bx^2)-(4*ax*cx)))/(2*ax)
+rootNeg.ap <- (-bx - sqrt((bx^2)-(4*ax*cx)))/(2*ax)
+```
+rootPos.ap = -4.88
+rootNeg.ap =  0.604 
+
+
+

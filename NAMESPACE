@@ -2,6 +2,7 @@
 
 export("%w/o%")
 export(GeodesicDistribution)
+export(JNSiena)
 export(PSQIScore)
 export(TriadCensus)
 export(adm.restorePkgLib)

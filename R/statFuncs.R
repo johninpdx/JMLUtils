@@ -322,8 +322,8 @@ JNSiena <- function(siena07out, # siena07 output
     isThisPos<-(bcoeff^2)-(4*acoeff*ccoeff) #If it isn't, the equation has no real roots.
     if(isThisPos<0){
       cat(paste("When ", theta2n, " is primary, the significance region cannot be calculated (no real roots)."))
-      rootPos.2 <- NA
-      rootNeg.2 <- NA}
+      rootMin.2 <- NA
+      rootMax.2 <- NA}
     else{
       # Quadratic formula
       rootPos.2 <- (-bcoeff + sqrt((bcoeff^2)-(4*acoeff*ccoeff)))/(2*acoeff)

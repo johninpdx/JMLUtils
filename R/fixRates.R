@@ -80,4 +80,3 @@ unfixRates <- function(efObj, efxNums=c(0)){
   return(efObj)
 }
 
-# TEST THESE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

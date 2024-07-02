@@ -225,7 +225,7 @@ JNSiena <- function(siena07out, # siena07 output
   #The dataframe of x1 as primary and x2 as moderator
   t1d <- data.frame(theta      = rep(theta1n,length(theta2vals)),
                     moderator  = rep(theta2n,length(theta2vals)),
-                    mod_values = round(theta2vals,4),
+                    modvalues = round(theta2vals,4),
                     thetavals  = round(theta1s,4),
                     thetase    = round(seT1,4),
                     thetap     = round(p1,3),
@@ -292,10 +292,10 @@ JNSiena <- function(siena07out, # siena07 output
 
   t2d <- data.frame(theta      = rep(theta2n,length(theta1vals)),
                     moderator  = rep(theta1n,length(theta1vals)),
-                    mod_values = round(theta1vals,4),
-                    theta_vals = round(theta2s,4),
-                    theta_se   = round(seT2,4),
-                    theta_p    = round(p2,3),
+                    modvalues = round(theta1vals,4),
+                    thetavals = round(theta2s,4),
+                    thetase   = round(seT2,4),
+                    thetap    = round(p2,3),
                     significance_adjusted = sig22)
 
   # ___________________________________________________________________

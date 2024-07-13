@@ -6,35 +6,27 @@ output: html_notebook
 Here is the procedure:
 1. With the old version of R running (either before you install the new
    version, or after but selecting the old version in Tools/Project Options),
-   run this next chunk:
+   run this next chunk.
 
 ```{r}
-#Gets character vector of all installed package names 
-packs <- installed.packages()[,1] 
-#Write named character vector into .r file
-sink("packs2move.r", append=F, split=F)
-dput(packs)
-sink()
+JMLUtils::adm.savePkgLib()
 ```
+
+   This function saves the names of all the packages in library of the old
+   version. The file containing those names is located in the folder 
+   selected by the 'folderLocation' function below; it's hard-coded for
+   which machine you're on.
 
 2. Install (if necessary) and activate the new version of R. Normally the new
    version will boot up automatically after it's installed, but you can also
    manually select in in the Tools/Project Options menu).
 
-3. Run the next chunk. This will install the packages in the new pkg lib
-   directory. 
-   a. In response to the offer to "restart R" because one of the packages is
-      already loaded, just say NO. 
-   b. When it offers to install from source and compile, say YES.
+3. Open an R GUI window, being sure you are using the new version of R. 
+   Then load JMLUtils. (DO NOT do this from RStudio!)
+   Then run the function JMLUtils::restorePkgLib().
    
 If there are a lot of packages, the recompliation process will take a good
 while to finish.
- 
-```{r}
-pax <- unlist(source("packs2move.r"))
-pax <- pax[1:length(pax)-1] #Removes extraneous list item
-install.packages(pax)
-```
 
 
 

@@ -7,7 +7,7 @@
 adm.restorePkgLib()
 }
 \value{
-Nothing; just a message indicating completion
+Just a message indicating completion
 }
 \description{
 If you saved your package library before upgrading R
@@ -15,6 +15,7 @@ If you saved your package library before upgrading R
    the package library with this function.
 }
 \details{
->> DO NOT RUN THIS FUNCTION FROM RSTUDIO<. Run it from the
- R GUI instead.
+Make sure you have installed the new R. Then open an R GUI
+ (>> DO NOT RUN THIS FUNCTION FROM RSTUDIO<<), and start up with the
+ new version of R.
 }

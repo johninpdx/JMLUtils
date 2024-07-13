@@ -7,7 +7,7 @@
 adm.savePkgLib()
 }
 \value{
-Nothing; just a message indication completion
+Just a message indicating completion
 }
 \description{
 Save existing package library to a temporary file.

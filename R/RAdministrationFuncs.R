@@ -6,7 +6,7 @@
 #' @note It is not necessary to do this for minor upgrades, i.e. the 'x'
 #'    in '3.4.x'; you only need to do so if your version changes in one
 #'    of the first two positions, i.e. the 'x' in x.4.2, or 3.x.1...
-#' @return Nothing; just a message indication completion
+#' @return Just a message indicating completion
 #'
 #' @export
 adm.savePkgLib <- function(){
@@ -33,9 +33,10 @@ adm.savePkgLib <- function(){
 #' @description If you saved your package library before upgrading R
 #'    using 'savePkgLib', you then do the upgrade, and restore
 #'    the package library with this function.
-#' @details >> DO NOT RUN THIS FUNCTION FROM RSTUDIO<. Run it from the
-#'  R GUI instead.
-#' @return Nothing; just a message indicating completion
+#' @details Make sure you have installed the new R. Then open an R GUI
+#'  (>> DO NOT RUN THIS FUNCTION FROM RSTUDIO<<), and start up with the
+#'  new version of R.
+#' @return Just a message indicating completion
 #'
 #'
 #' @export

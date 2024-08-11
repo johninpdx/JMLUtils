@@ -155,7 +155,7 @@ TriadCensus <- function(i, data, sims, wave, groupName, varName, levls=1:16){
 #'     containing the significance region boundaries for each effect as primary,
 #'     moderated by the other.
 #' @export
-JNSiena <- function(siena07out, # siena07 output
+JNSiena.2way <- function(siena07out, # siena07 output
                     theta1, #number of the first parameter involved in the
                     # interaction - check the model results
                     theta2, # number of the 2nd parameter

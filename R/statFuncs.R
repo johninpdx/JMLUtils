@@ -112,7 +112,7 @@ TriadCensus <- function(i, data, sims, wave, groupName, varName, levls=1:16){
 }
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-#        >> JNSiena <<
+#        >> JNSiena.2way <<
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 #'
 #' Calculates Johnson-Neyman significance regions and MOM signficance
@@ -342,6 +342,396 @@ JNSiena.2way <- function(siena07out, # siena07 output
     return(list(t1d,t2d))
   }
 }
+
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#        >> JNSiena.3way <<
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#'
+#' Calculates Johnson-Neyman significance regions and MOM signficance
+#'   values (raw and Bonferroni-Holm adjusted) for SAOM 2-way
+#'   interactions.
+#'
+#' @param siena07out An object of class 'sienaFit'
+#' @param theta1  Number (from RSiena output) of 1st effect involved in
+#'     a 2/3-way interaction effect included in 'siena07out'.
+#' @param theta2 Number (from RSiena output) of 2st effect involved in
+#'     a 2/3-way interaction effect included in 'siena07out'.
+#' @param theta3 Number (from RSiena output) of 3rd effect involved in
+#'     a 2/3-way interaction effect included in 'siena07out'. If it is
+#'     not included in the function call, a 2-way interaction is
+#'     assumed involving theta1 and theta2
+#' @param thetaInt12 Number (from RSiena output) of the multiplicative
+#'     interaction of the two effects identified by theta1 and theta2.
+#'     This is always required.
+#' @param thetaInt13 If theta3 is included, the number (from RSiena output)
+#'     of the multiplicative interaction of the effects identified as
+#'     theta1 and theta3.
+#' @param thetaInt23 If theta3 is included, the number (from RSiena output)
+#'     of the multiplicative interaction of the effects identified as
+#'     theta2 and theta3.
+#' @param thetaInt123 If theta3 is included, the number (from RSiena output)
+#'     of the multiplicative interaction of the effects identified as
+#'     theta1, theta2 and theta3.
+#' @param theta1vals A vector of numerical values of effect 1 for which raw and
+#'     B-H-adjusted significance should be obtained, applying both to
+#'     effect 1 as a predictor (in the 1st output table) and as a
+#'     moderator (in the 2nd output table).
+#' @param theta2vals A vector of numerical values of effect 2 for which raw and
+#'     B-H-adjusted significance should be obtained, applying both to
+#'     effect 2 as a predictor (in the 2nd output table) and as a
+#'     moderator (in the 1st output table).
+#' @param theta3vals A vector of numerical values of effect 3 for which
+#'    significance should be obtained, applying both to
+#'     effect 3 as a predictor and as a moderator.
+#' @control_fdr Logical (T/F). Should the program output moderated
+#'     significance results using Bonferroni-Holm-adjusted p-value
+#'     criteria? Default= FALSE.
+#' @param alpha Number (default = 0.05) corresponding the 2-tailed significance
+#'     level used to calculate whether a moderated effect is significant for a
+#'     given value (for points in theta1vals, theta2vals, and theta3vals)
+#'     ranges.
+#' @roundres Number of significant digits in output. Default = 3.
+#' @color_low Color to use in heat maps of 3-way results for the low end of
+#'     the moderated parameter values.
+#' @color_high Color to use in heat maps of 3-way results for the high end
+#'     of the moderated parameter values.
+#' @color_values Color to use in heat maps of 3-way results for actual
+#'     numerical values. This option appears not to be implemented yet.
+#' @return A list of 5 main elements: Theta, standard_errors, p_values,
+#'     significance, and plots. Each of these elements will have 2 (if 2-way
+#'     analysis) or 3 (if 3-way analysis) sub-elements giving the
+#'     moderator-conditional predicted values of theta, SE, p, and
+#'     significance as tables (with each variable having a turn at being
+#'     the focal predictor, with the other(s) as moderator(s). The plots
+#'     element contains (obviously) heat map graphs showing these
+#'     results graphically.
+#' @export
+JNSiena.3way <- function(siena07out,
+                         theta1,
+                         theta2,
+                         theta3 = NULL,
+                         thetaInt12,
+                         thetaInt13 = NULL,
+                         thetaInt23 = NULL,
+                         thetaInt123 = NULL,
+                         theta1Vals,
+                         theta2Vals,
+                         theta3Vals = NULL,
+                         control_fdr = FALSE,
+                         alpha = 0.05,
+                         round_res = 3,
+                         color_low = 'white',
+                         color_high = '#000066',
+                         color_values = 'limegreen') {
+
+
+  library(ggplot2)
+  library(tidyverse)
+  library(scales)
+
+  if (class(siena07out) != 'sienaFit') {
+    stop('sienaout needs to be a sienaFit object created by siena07().')
+  }
+
+  sn <- siena07out$effects$effectName
+
+  if (any(c(theta1 ,theta2, theta3, thetaInt12, thetaInt13, thetaInt23,
+            thetaInt123) > length(sn))) {
+    cat('The following parameter numbers are incorrect:\n',
+        if (theta1 > length(sn)) {'theta1\n'},
+        if (theta2 > length(sn)) {'theta2\n'},
+        if (theta3 > length(sn)) {'theta3\n'},
+        if (thetaInt12 > length(sn)) {'thetaInt12\n'},
+        if (thetaInt13 > length(sn)) {'thetaInt13\n'},
+        if (thetaInt23 > length(sn)) {'thetaInt23\n'},
+        if (thetaInt123 > length(sn)) {'thetaInt123\n'},
+        'Numbers need to be the number of the effect in the sienaFit object.\n',
+        'See most left column of your siena07() result call.\n\n')
+    stop()
+  }
+
+  theta1n <- sn[theta1]
+  theta2n <- sn[theta2]
+
+  covT <- siena07out$covtheta
+  thetas <- siena07out$theta
+  #______________________________________________________________
+  #If theta3 is NULL, we only perform 2-way moderation analysis
+  #______________________________________________________________
+  if (is.null(theta3)) {
+    #________________________________________________________________
+    #Moderated values for theta1 across theta2 vals
+    theta1s <- thetas[theta1] + thetas[thetaInt12] * theta2Vals
+    #SEs of these moderated values
+    seT1 <- sqrt(covT[theta1,theta1] +
+                   theta2Vals * 2 * covT[thetaInt12,theta1] +
+                   theta2Vals ^ 2 * covT[thetaInt12,thetaInt12])
+
+    z1 <- theta1s/seT1
+    #Pvals for the moderated values of theta1
+    p1 <- c()
+    for (i in 1:length(theta2Vals)) {
+      p1[i] <-  2 * pmin(pnorm(z1[[i]]), (1 - pnorm(z1[[i]])))
+    }
+    #Performs Bonferroni-Holm adjustment of Pvals, if requested
+    if (control_fdr) {
+      p1O <- p1[order(p1)]
+      bhT1 <- alpha * c(1:length(theta2Vals))/length(theta2Vals)
+      sig1 <- p1O < bhT1
+      sig11 <- vector(length = length(theta2Vals))
+      for (i in 1:length(theta2Vals)) {
+        sig11[order(p1)[i]] <- sig1[i]
+      }
+    } else {
+      sig11 <- p1 < alpha
+    }
+
+
+    #Output tables for theta1 as main predictor
+    t1d <- data.frame(theta      = rep(theta1n,length(theta2Vals)),
+                      moderator  = rep(theta2n,length(theta2Vals)),
+                      mod_values = round(theta2Vals,round_res),
+                      thetaVals  = round(theta1s,round_res),
+                      thetase    = round(seT1,round_res),
+                      thetap     = round(p1,3),
+                      significance_adjusted = sig11)
+    #_______________________________________________________________
+    #Moderated values for theta2 across values of theta1
+    theta2s <- thetas[theta2] + thetas[thetaInt12] * theta1Vals
+    #SEs of these moderated values
+    seT2 <- sqrt(covT[theta2,theta2] +
+                   theta1Vals * 2 * covT[thetaInt12,theta2] +
+                   theta1Vals ^ 2 * covT[thetaInt12,thetaInt12])
+
+    z2 <- theta2s/seT2
+    p2 <- c()
+    for (i in 1:length(theta1Vals)) {
+      p2[i] <-  2 * pmin(pnorm(z2[[i]]), (1 - pnorm(z2[[i]])))
+    }
+
+
+
+    for (i in 1:length(theta2Vals)) {
+      p1[i] <-  2 * pmin(pnorm(z1[[i]]), (1 - pnorm(z1[[i]])))
+    }
+    if (control_fdr) {
+      p2O <- p2[order(p2)]
+      bhT2 <- alpha * c(1:length(theta1Vals))/length(theta1Vals)
+      sig2 <- p2O < bhT2
+      sig22 <- vector(length = length(theta1Vals))
+      for (i in 1:length(theta1Vals)) {
+        sig22[order(p2)[i]] <- sig2[i]
+      }
+    } else {
+      sig22 <- p2 < alpha
+    }
+
+    t2d <- data.frame(theta      = rep(theta2n,length(theta1Vals)),
+                      moderator  = rep(theta1n,length(theta1Vals)),
+                      mod_values = round(theta1Vals,round_res),
+                      theta_Vals = round(theta2s,round_res),
+                      theta_se   = round(seT2,round_res),
+                      theta_p    = round(p2,3),
+                      significance_adjusted = sig22)
+    return_list <- list(t1d,t2d)
+    #____________________________________________________________________
+  } else {
+    #_____________________________________________________________________
+    #Perform 3-way analysis
+    #_____________________________________________________________________
+    theta3n <- sn[theta3]
+
+    thetaMat <- vector(mode = 'list', length = 3)
+    seMat    <- vector(mode = 'list', length = 3)
+    ZMat     <- vector(mode = 'list', length = 3)
+    pMat     <- vector(mode = 'list', length = 3)
+    sigMat   <- vector(mode = 'list', length = 3)
+    figures  <- vector(mode = 'list', length = 3)
+    names(thetaMat) <- names(seMat) <- names(figures) <- c(theta1n,theta2n,
+                                                           theta3n)
+    names(ZMat) <- names(pMat) <- names(sigMat) <- c(theta1n,theta2n,theta3n)
+
+    #Calculates moderated parameter values for a main predictor bx
+    #   and 2 moderators bm1x, bm2x (including the interaction of the
+    #   2 moderators)
+    parFun <- function(m1,m2,
+                       bx,
+                       bm1x,
+                       bm2x,
+                       bm1m2x) {
+      bx + m1 * bm1x  + m2 * bm2x  + m1 * m2 * bm1m2x
+    }
+    #Calculates SEs for parameters from parFun
+    seFun <- function(m1,m2,
+                      Vx,
+                      Vm1x,
+                      Vm2x,
+                      Vm1m2x,
+                      covX_m1x,
+                      covX_m2x,
+                      covX_m1m2x,
+                      covm1x_m2x,
+                      covm1x_m1m2x,
+                      covm2x_m1m2x) {
+      sqrt(Vx +
+             m1^2 * Vm1x +
+             m2^2 * Vm2x +
+             (m1 * m2)^2 * Vm1m2x +
+             2 * m1 * covX_m1x +
+             2 * m2 * covX_m2x +
+             2 * m1 * m2 * covX_m1m2x +
+             2 * m1 * m2 * covm1x_m2x +
+             2 * m1^2 * m2 * covm1x_m1m2x +
+             2 * m1 * m2^2 * covm2x_m1m2x)
+    }
+
+    #Parameter calculations for the 3 pairs of moderators possible
+    # in a 3-way interaction
+
+    thetaMat[[1]] <- outer(theta2Vals,theta3Vals,
+                           parFun,
+                           bx     = thetas[theta1],
+                           bm1x   = thetas[thetaInt12],
+                           bm2x   = thetas[thetaInt13],
+                           bm1m2x = thetas[thetaInt123])
+
+    thetaMat[[2]] <- outer(theta1Vals,theta3Vals,
+                           parFun,
+                           bx     = thetas[theta2],
+                           bm1x   = thetas[thetaInt12],
+                           bm2x   = thetas[thetaInt23],
+                           bm1m2x = thetas[thetaInt123])
+
+    thetaMat[[3]] <- outer(theta1Vals,theta2Vals,
+                           parFun,
+                           bx     = thetas[theta3],
+                           bm1x   = thetas[thetaInt13],
+                           bm2x   = thetas[thetaInt23],
+                           bm1m2x = thetas[thetaInt123])
+
+
+    seMat[[1]] <-  outer(theta2Vals,theta3Vals,
+                         seFun,
+                         Vx           = covT[theta1,theta1],
+                         Vm1x         = covT[thetaInt12,thetaInt12],
+                         Vm2x         = covT[thetaInt13,thetaInt13],
+                         Vm1m2x       = covT[thetaInt123,thetaInt123],
+                         covX_m1x     = covT[theta1,thetaInt12],
+                         covX_m2x     = covT[theta1,thetaInt13],
+                         covX_m1m2x   = covT[theta1,thetaInt123],
+                         covm1x_m2x   = covT[thetaInt12,thetaInt13],
+                         covm1x_m1m2x = covT[thetaInt12,thetaInt123],
+                         covm2x_m1m2x = covT[thetaInt13,thetaInt123])
+
+    seMat[[2]] <- outer(theta1Vals,theta3Vals,
+                        seFun,
+                        Vx           = covT[theta2,theta2],
+                        Vm1x         = covT[thetaInt12,thetaInt12],
+                        Vm2x         = covT[thetaInt23,thetaInt23],
+                        Vm1m2x       = covT[thetaInt123,thetaInt123],
+                        covX_m1x     = covT[theta2,thetaInt12],
+                        covX_m2x     = covT[theta2,thetaInt23],
+                        covX_m1m2x   = covT[theta2,thetaInt123],
+                        covm1x_m2x   = covT[thetaInt12,thetaInt23],
+                        covm1x_m1m2x = covT[thetaInt12,thetaInt123],
+                        covm2x_m1m2x = covT[thetaInt23,thetaInt123])
+
+    seMat[[3]] <- outer(theta1Vals,theta2Vals,
+                        seFun,
+                        Vx           = covT[theta3,theta3],
+                        Vm1x         = covT[thetaInt13,thetaInt13],
+                        Vm2x         = covT[thetaInt23,thetaInt23],
+                        Vm1m2x       = covT[thetaInt123,thetaInt123],
+                        covX_m1x     = covT[theta3,thetaInt13],
+                        covX_m2x     = covT[theta3,thetaInt23],
+                        covX_m1m2x   = covT[theta3,thetaInt123],
+                        covm1x_m2x   = covT[thetaInt13,thetaInt23],
+                        covm1x_m1m2x = covT[thetaInt13,thetaInt123],
+                        covm2x_m1m2x = covT[thetaInt23,thetaInt123])
+
+    vals <- list(theta1Vals,theta2Vals,theta3Vals)
+    ns <- list(theta1n,theta2n,theta3n)
+    for (i in 1:3) {
+      #naming with parameter name might interfere with plot
+      # thus only values so far, otherwise:paste(ns[-i][[1]],vals[-i][[1]])
+      row.names(thetaMat[[i]]) <- row.names(seMat[[i]]) <- vals[-i][[1]]
+      colnames(thetaMat[[i]])  <- colnames(seMat[[i]])  <- vals[-i][[2]]
+      ZMat[[i]]   <- thetaMat[[i]] / seMat[[i]]
+      pMat[[i]]   <- 2 * pmin(pnorm(ZMat[[i]]), (1 - pnorm(ZMat[[i]])))
+      sigMat[[i]] <- pMat[[i]] < alpha
+
+
+
+      dat2 <- thetaMat[[i]] |>
+        as.data.frame() |>
+        rownames_to_column("Var1") |>
+        pivot_longer(-Var1, names_to = "Var2", values_to = "value")
+      sig2 <- sigMat[[i]] |>
+        as.data.frame() |>
+        rownames_to_column("Var1") |>
+        pivot_longer(-Var1, names_to = "Var2", values_to = "value")
+
+      dat2$Var1 <- as.numeric(dat2$Var1)
+      dat2$Var2 <- as.numeric(dat2$Var2)
+      sig3 <- dat2[sig2$value,c("Var1", "Var2")]
+
+      #gradient_function <- gradient_n_pal(c(color_high,color_low))
+      #
+      ## Generate a sequence of numeric values between 0 and 1
+      #values <- unique(dat2$value)
+      #values <- values[order(values)]
+      #values_r <- rescale(values)
+      #gradient_colors <- gradient_function(values_r)
+      #names(gradient_colors) <- round(values,5)
+      #
+      #dat2$text_col <- NA
+      #for (j in 1:nrow(dat2)) {
+      #  dat2$text_col[j] <- gradient_colors[as.character(round(dat2$value[j],5))]
+      #}
+      #
+
+      figures[[i]] <- ggplot(dat2, aes(Var1, Var2)) +
+        geom_tile(aes(fill = value)) +
+        scale_color_identity() +
+        scale_fill_gradient(low = color_low, high = color_high) +
+        geom_rect(data = sig3, linewidth = 2, fill = NA, colour = "black",
+                  aes(xmin = Var1 - 0.5,
+                      xmax = Var1 + 0.5,
+                      ymin = Var2 - 0.5,
+                      ymax = Var2 + 0.5)) +
+        xlab(ns[-i][[1]]) +
+        ylab(ns[-i][[2]]) +
+        ggtitle(ns[i]) +
+        theme_bw()
+
+      if (all(c(length(theta1Vals) < 8,
+                length(theta3Vals) < 8,
+                length(theta2Vals) < 8))) {
+
+        figures[[i]] <- figures[[i]] + geom_text(aes(label = round(value,
+                                                                   round_res)),
+                                                 color = color_values)
+      }
+
+    }
+    # add fdr
+
+    return_list <- list(thetas = thetaMat,
+                        standard_errors = seMat,
+                        p_values = pMat,
+                        significance = sigMat,
+                        plots = figures)
+  }
+
+
+  #cat(theta1n, 'is significant when ', theta2n, 'is above X and',
+  #    theta3n, 'is above y')
+  return(return_list)
+
+}
+
+
+
 
 
 

@@ -159,6 +159,56 @@ getRSFit <- function(fitObj, pVal=TRUE, tails=2){
 }
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#  >> getglmmTMFit <<
+#______________________________________________________________________________
+#' Pulls glmmTMB model results with t and p-vals
+#'
+#' @description Extracts effect names, effect types,
+#'   betas (estimated parameters) and standard errors from a
+#'   glmmTMB object, then calculates t-statistics and one or two-tailed
+#'   p-values for each effect.
+#' @details Uses a version of JMLUtils::pValT (pvT) which does not output
+#'   anything, just calculates 1 or 2-tailed p-vals.
+#' @param fitObj A glmmTMB 'glmmTMB' object (output from glmmTMB)
+#' @param pVal Logical: if TRUE (default), calculates the t-ratio and
+#'   normal-distribution p-value (1 or 2 tailed depending on the 'tails'
+#'   parameter) for each effect.
+#' @param tails Numeric: default is 2; enter 1 if 1-tailed pval preferred.
+#'
+#' @return A tibble with the 7 columns described earlier.
+#' @export
+getglmmTMBFit <- function(fitObj, pVal=TRUE, tails=2){
+  #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  cat("This function not yet implemented")
+  stop()
+  #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  if (class(fitObj) != "glmmTMB"){
+    cat("\nERROR: Input object is not class glmmTMB")
+    stop()
+  }
+  if(tails==1 | tails==2){
+  }else{
+    cat("\nWarning: tails not 1 or 2; 2-tailed is assumed")
+    tails <- 2
+  }
+  col1.fxNames <- fitObj$requestedEffects$effectName
+  col3.theta <- fitObj$theta
+  col4.sErr <- fitObj$se
+  col5.tStat <- fitObj$theta/fitObj$se
+  col6.pVal <- pvT(fitObj$theta, col4.sErr, tails)
+  col7.tails <- rep(tails, length(fitObj$requestedEffects$shortName))
+  outTbl <- tibble(Number = col1.nbrFx,
+                   Effect = col2.fxNames,
+                   Parameter = col3.theta,
+                   SE = col4.sErr,
+                   tStat = col5.tStat,
+                   PVal = col6.pVal,
+                   tails = tails)
+  return(outTbl)
+}
+
+#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 #  >> pvT <<
 #______________________________________________________________________________
 #' Calculates P-values

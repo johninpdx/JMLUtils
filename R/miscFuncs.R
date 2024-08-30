@@ -163,7 +163,7 @@ getRSFit <- function(fitObj, pVal=TRUE, tails=2){
 #______________________________________________________________________________
 #' Calculates P-values
 #'
-#' @description Calculater 1 or 2-tailed pvalues. Not exported
+#' @description Calculater 1 or 2-tailed pvalues.
 #' @details A version of JMLUtils::pValT (pvT) which does not output
 #'   anything, just calculates 1 or 2-tailed p-vals.
 #' @param pDiff Number: Effect size
@@ -171,6 +171,7 @@ getRSFit <- function(fitObj, pVal=TRUE, tails=2){
 #' @param pTails Number: number of tails (1 or 2)
 #'
 #' @return The p-value (number or vector)
+#' @export
 pvT <- function(pDiff, sE, pTails){
   tRat<-pDiff/sE
   # If 1-tailed:

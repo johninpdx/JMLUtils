@@ -17,7 +17,7 @@ pvT(pDiff, sE, pTails)
 The p-value (number or vector)
 }
 \description{
-Calculater 1 or 2-tailed pvalues. Not exported
+Calculater 1 or 2-tailed pvalues.
 }
 \details{
 A version of JMLUtils::pValT (pvT) which does not output

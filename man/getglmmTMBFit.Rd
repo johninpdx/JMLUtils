@@ -7,7 +7,7 @@
 getglmmTMBFit(fitObj, pVal = TRUE, tails = 2)
 }
 \arguments{
-\item{fitObj}{A 'glmmTMB' object (output from glmmTMB)}
+\item{fitObj}{A glmmTMB 'glmmTMB' object (output from glmmTMB)}
 
 \item{pVal}{Logical: if TRUE (default), calculates the t-ratio and
 normal-distribution p-value (1 or 2 tailed depending on the 'tails'
@@ -16,13 +16,13 @@ parameter) for each effect.}
 \item{tails}{Numeric: default is 2; enter 1 if 1-tailed pval preferred.}
 }
 \value{
-A tibble with the 5 columns described earlier (fx name, beta, SE,
-  tstat, pval).
+A tibble with the 7 columns described earlier.
 }
 \description{
-Extracts effect names, betas (estimated parameters) and
-  std errors from a glmmTMB results object, calculates t-statistics and one
-  or two-tailed p-values for each effect, and exports these into a tbl
+Extracts effect names, effect types,
+  betas (estimated parameters) and standard errors from a
+  glmmTMB object, then calculates t-statistics and one or two-tailed
+  p-values for each effect.
 }
 \details{
 Uses a version of JMLUtils::pValT (pvT) which does not output

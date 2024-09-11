@@ -54,14 +54,25 @@ given value (for points in theta1vals and theta2vals) or range
 (for JN significance region computation).}
 }
 \value{
-A list. The first two elements of the list are dataframes containing
-    both raw and B-H-adjusted significance (the former a p-value, the latter
-    simply TRUE or FALSE) of the primary effect for each value of the
-    moderator given by thetaXvals (X=1 or 2). The first such table treats
-    effect 1 as primary, moderated by effect 2, and the second table is the
-    reverse. Additionally, if sigRegion is TRUE, a third dataframe is included
-    containing the significance region boundaries for each effect as primary,
-    moderated by the other.
+A list of 5 elements.
+    \enumerate{
+       \item{1. *thetas* Three matrices of the predicted theta values
+       of each of predictors 1, 2, and 3, calculated on each pair of
+       values in the range (or discrete values) provided for each
+       of the remaining two moderators.}
+       \item{2. *standard_errors* SEs calculated conditionally in the
+       same way as for the thetas.}
+       \item{3. *p_values* P-values calculated conditionally in the
+       same way as for the thetas.}
+       \item{4. *significance* TRUE if the p-value falls within the
+       Region Of Significance, as specified by alpha and, possibly also
+       any adjustment for multiple tests; otherwise FALSE. Calculated
+       in a matrix with the same conditions as for thetas, etc.}
+       \item{5. *plots* A list with three class gg and ggplot elements as
+       its members, corresponding to each of the three predictors being
+       taken as the primary predictor, with the same ordering as for the
+       previous list elements (theta, etc.). }
+       }
 }
 \description{
 Calculates Johnson-Neyman significance regions and MOM signficance

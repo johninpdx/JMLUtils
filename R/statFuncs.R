@@ -146,14 +146,25 @@ TriadCensus <- function(i, data, sims, wave, groupName, varName, levls=1:16){
 #'     level used to calculate whether a moderated effect is significant for a
 #'     given value (for points in theta1vals and theta2vals) or range
 #'     (for JN significance region computation).
-#' @return A list. The first two elements of the list are dataframes containing
-#'     both raw and B-H-adjusted significance (the former a p-value, the latter
-#'     simply TRUE or FALSE) of the primary effect for each value of the
-#'     moderator given by thetaXvals (X=1 or 2). The first such table treats
-#'     effect 1 as primary, moderated by effect 2, and the second table is the
-#'     reverse. Additionally, if sigRegion is TRUE, a third dataframe is included
-#'     containing the significance region boundaries for each effect as primary,
-#'     moderated by the other.
+#' @return A list of 5 elements.
+#'     \enumerate{
+#'        \item{1. *thetas* Three matrices of the predicted theta values
+#'        of each of predictors 1, 2, and 3, calculated on each pair of
+#'        values in the range (or discrete values) provided for each
+#'        of the remaining two moderators.}
+#'        \item{2. *standard_errors* SEs calculated conditionally in the
+#'        same way as for the thetas.}
+#'        \item{3. *p_values* P-values calculated conditionally in the
+#'        same way as for the thetas.}
+#'        \item{4. *significance* TRUE if the p-value falls within the
+#'        Region Of Significance, as specified by alpha and, possibly also
+#'        any adjustment for multiple tests; otherwise FALSE. Calculated
+#'        in a matrix with the same conditions as for thetas, etc.}
+#'        \item{5. *plots* A list with three class gg and ggplot elements as
+#'        its members, corresponding to each of the three predictors being
+#'        taken as the primary predictor, with the same ordering as for the
+#'        previous list elements (theta, etc.). }
+#'        }
 #' @export
 JNSiena.2way <- function(siena07out, # siena07 output
                     theta1, #number of the first parameter involved in the
@@ -344,7 +355,7 @@ JNSiena.2way <- function(siena07out, # siena07 output
 }
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-#        >> JNSiena.3way <<
+#        >> JNSiena5.3way <<
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 #'
 #' Calculates Johnson-Neyman significance regions and MOM signficance
@@ -380,8 +391,8 @@ JNSiena.2way <- function(siena07out, # siena07 output
 #'     B-H-adjusted significance should be obtained, applying both to
 #'     effect 2 as a predictor (in the 2nd output table) and as a
 #'     moderator (in the 1st output table).
-#' @param theta3vals A vector of numerical values of effect 3 for which
-#'    significance should be obtained, applying both to
+#' @param theta3vals (Default NULL) A vector of numerical values of effect 3
+#'     for which significance should be obtained, applying both to
 #'     effect 3 as a predictor and as a moderator.
 #' @control_fdr Logical (T/F). Should the program output moderated
 #'     significance results using Bonferroni-Holm-adjusted p-value
@@ -397,35 +408,54 @@ JNSiena.2way <- function(siena07out, # siena07 output
 #'     of the moderated parameter values.
 #' @color_values Color to use in heat maps of 3-way results for actual
 #'     numerical values. This option appears not to be implemented yet.
-#' @return A list of 5 main elements: Theta, standard_errors, p_values,
-#'     significance, and plots. Each of these elements will have 2 (if 2-way
-#'     analysis) or 3 (if 3-way analysis) sub-elements giving the
-#'     moderator-conditional predicted values of theta, SE, p, and
-#'     significance as tables (with each variable having a turn at being
-#'     the focal predictor, with the other(s) as moderator(s). The plots
-#'     element contains (obviously) heat map graphs showing these
-#'     results graphically.
+#' @color_grid Color of the grid in the plot.
+#' @grid_density (Default 0.01) How many values per unit area in the grid?
+#' @grid_spacing (Default 0.1) How far apart should the gridlines be?
+#' @return A list of 5 elements.
+#'     \enumerate{
+#'        \item{1. *thetas* Three matrices of the predicted theta values
+#'        of each of predictors 1, 2, and 3, calculated on each pair of
+#'        values in the range (or discrete values) provided for each
+#'        of the remaining two moderators.}
+#'        \item{2. *standard_errors* SEs calculated conditionally in the
+#'        same way as for the thetas.}
+#'        \item{3. *p_values* P-values calculated conditionally in the
+#'        same way as for the thetas.}
+#'        \item{4. *significance* TRUE if the p-value falls within the
+#'        Region Of Significance, as specified by alpha and, possibly also
+#'        any adjustment for multiple tests; otherwise FALSE. Calculated
+#'        in a matrix with the same conditions as for thetas, etc.}
+#'        \item{5. *plots* A list with three class gg and ggplot elements as
+#'        its members, corresponding to each of the three predictors being
+#'        taken as the primary predictor, with the same ordering as for the
+#'        previous list elements (theta, etc.).}
+#'        }
 #' @export
-JNSiena.3way <- function(siena07out,
-                         theta1,
-                         theta2,
-                         theta3 = NULL,
-                         thetaInt12,
-                         thetaInt13 = NULL,
-                         thetaInt23 = NULL,
-                         thetaInt123 = NULL,
-                         theta1Vals,
-                         theta2Vals,
-                         theta3Vals = NULL,
-                         control_fdr = FALSE,
-                         alpha = 0.05,
-                         round_res = 3,
-                         color_low = 'white',
-                         color_high = '#000066',
-                         color_values = 'limegreen') {
+JNSiena5.3way <- function(siena07out,
+                     theta1,
+                     theta2,
+                     theta3 = NULL,
+                     thetaInt12,
+                     thetaInt13 = NULL,
+                     thetaInt23 = NULL,
+                     thetaInt123 = NULL,
+                     theta1Vals,
+                     theta2Vals,
+                     theta3Vals = NULL,
+                     control_fdr = FALSE,
+                     alpha = 0.05,
+                     round_res = 3,
+                     color_mid = 'white',
+                     color_low = '#F05039',
+                     color_high = '#000066',
+                     color_values = 'grey40',
+                     color_grid = 'black',
+                     grid_density = 0.01,
+                     grid_spacing = 0.1) {
 
 
   library(ggplot2)
+  library(ggpattern)
   library(tidyverse)
   library(scales)
 
@@ -455,25 +485,18 @@ JNSiena.3way <- function(siena07out,
 
   covT <- siena07out$covtheta
   thetas <- siena07out$theta
-  #______________________________________________________________
-  #If theta3 is NULL, we only perform 2-way moderation analysis
-  #______________________________________________________________
+
   if (is.null(theta3)) {
-    #________________________________________________________________
-    #Moderated values for theta1 across theta2 vals
     theta1s <- thetas[theta1] + thetas[thetaInt12] * theta2Vals
-    #SEs of these moderated values
     seT1 <- sqrt(covT[theta1,theta1] +
                    theta2Vals * 2 * covT[thetaInt12,theta1] +
                    theta2Vals ^ 2 * covT[thetaInt12,thetaInt12])
 
     z1 <- theta1s/seT1
-    #Pvals for the moderated values of theta1
     p1 <- c()
     for (i in 1:length(theta2Vals)) {
       p1[i] <-  2 * pmin(pnorm(z1[[i]]), (1 - pnorm(z1[[i]])))
     }
-    #Performs Bonferroni-Holm adjustment of Pvals, if requested
     if (control_fdr) {
       p1O <- p1[order(p1)]
       bhT1 <- alpha * c(1:length(theta2Vals))/length(theta2Vals)
@@ -487,7 +510,7 @@ JNSiena.3way <- function(siena07out,
     }
 
 
-    #Output tables for theta1 as main predictor
+
     t1d <- data.frame(theta      = rep(theta1n,length(theta2Vals)),
                       moderator  = rep(theta2n,length(theta2Vals)),
                       mod_values = round(theta2Vals,round_res),
@@ -495,10 +518,9 @@ JNSiena.3way <- function(siena07out,
                       thetase    = round(seT1,round_res),
                       thetap     = round(p1,3),
                       significance_adjusted = sig11)
-    #_______________________________________________________________
-    #Moderated values for theta2 across values of theta1
+
+
     theta2s <- thetas[theta2] + thetas[thetaInt12] * theta1Vals
-    #SEs of these moderated values
     seT2 <- sqrt(covT[theta2,theta2] +
                    theta1Vals * 2 * covT[thetaInt12,theta2] +
                    theta1Vals ^ 2 * covT[thetaInt12,thetaInt12])
@@ -534,11 +556,10 @@ JNSiena.3way <- function(siena07out,
                       theta_p    = round(p2,3),
                       significance_adjusted = sig22)
     return_list <- list(t1d,t2d)
-    #____________________________________________________________________
+
+
+
   } else {
-    #_____________________________________________________________________
-    #Perform 3-way analysis
-    #_____________________________________________________________________
     theta3n <- sn[theta3]
 
     thetaMat <- vector(mode = 'list', length = 3)
@@ -551,9 +572,7 @@ JNSiena.3way <- function(siena07out,
                                                            theta3n)
     names(ZMat) <- names(pMat) <- names(sigMat) <- c(theta1n,theta2n,theta3n)
 
-    #Calculates moderated parameter values for a main predictor bx
-    #   and 2 moderators bm1x, bm2x (including the interaction of the
-    #   2 moderators)
+
     parFun <- function(m1,m2,
                        bx,
                        bm1x,
@@ -561,7 +580,7 @@ JNSiena.3way <- function(siena07out,
                        bm1m2x) {
       bx + m1 * bm1x  + m2 * bm2x  + m1 * m2 * bm1m2x
     }
-    #Calculates SEs for parameters from parFun
+
     seFun <- function(m1,m2,
                       Vx,
                       Vm1x,
@@ -585,8 +604,7 @@ JNSiena.3way <- function(siena07out,
              2 * m1 * m2^2 * covm2x_m1m2x)
     }
 
-    #Parameter calculations for the 3 pairs of moderators possible
-    # in a 3-way interaction
+
 
     thetaMat[[1]] <- outer(theta2Vals,theta3Vals,
                            parFun,
@@ -665,7 +683,8 @@ JNSiena.3way <- function(siena07out,
       dat2 <- thetaMat[[i]] |>
         as.data.frame() |>
         rownames_to_column("Var1") |>
-        pivot_longer(-Var1, names_to = "Var2", values_to = "value")
+        pivot_longer(-Var1, names_to = "Var2", values_to = "Parameter Value")
+
       sig2 <- sigMat[[i]] |>
         as.data.frame() |>
         rownames_to_column("Var1") |>
@@ -673,44 +692,49 @@ JNSiena.3way <- function(siena07out,
 
       dat2$Var1 <- as.numeric(dat2$Var1)
       dat2$Var2 <- as.numeric(dat2$Var2)
-      sig3 <- dat2[sig2$value,c("Var1", "Var2")]
+      sig2$Var1 <- as.numeric(dat2$Var1)
+      sig2$Var2 <- as.numeric(dat2$Var2)
 
-      #gradient_function <- gradient_n_pal(c(color_high,color_low))
-      #
-      ## Generate a sequence of numeric values between 0 and 1
-      #values <- unique(dat2$value)
-      #values <- values[order(values)]
-      #values_r <- rescale(values)
-      #gradient_colors <- gradient_function(values_r)
-      #names(gradient_colors) <- round(values,5)
-      #
-      #dat2$text_col <- NA
-      #for (j in 1:nrow(dat2)) {
-      #  dat2$text_col[j] <- gradient_colors[as.character(round(dat2$value[j],5))]
-      #}
-      #
+      sig2$pattern <- ifelse(sig2$value, "none",'crosshatch')
+      sig3 <- sig2[!sig2$value,]
+
 
       figures[[i]] <- ggplot(dat2, aes(Var1, Var2)) +
-        geom_tile(aes(fill = value)) +
+        geom_tile(aes(fill = `Parameter Value`)) +
         scale_color_identity() +
-        scale_fill_gradient(low = color_low, high = color_high) +
-        geom_rect(data = sig3, linewidth = 2, fill = NA, colour = "black",
-                  aes(xmin = Var1 - 0.5,
-                      xmax = Var1 + 0.5,
-                      ymin = Var2 - 0.5,
-                      ymax = Var2 + 0.5)) +
-        xlab(ns[-i][[1]]) +
-        ylab(ns[-i][[2]]) +
+        scale_fill_gradient2(low = color_low,
+                             high = color_high,
+                             mid = color_mid,
+                             midpoint = 0) +
+        geom_tile_pattern(data = sig3, aes(pattern = pattern),
+                          pattern_density = grid_density,
+                          pattern_spacing = grid_spacing,
+                          pattern_color = color_grid,
+                          alpha = 0) +
         ggtitle(ns[i]) +
-        theme_bw()
+        theme_bw() +
+        guides(pattern = "none") +
+        xlab(ns[-i][[1]]) +
+        ylab(ns[-i][[2]])
 
       if (all(c(length(theta1Vals) < 8,
                 length(theta3Vals) < 8,
                 length(theta2Vals) < 8))) {
 
-        figures[[i]] <- figures[[i]] + geom_text(aes(label = round(value,
-                                                                   round_res)),
-                                                 color = color_values)
+        figures[[i]] <- figures[[i]] + geom_text(aes(
+          label = round(`Parameter Value`,
+                        round_res)),
+          color = color_values)
+        # +
+        #   scale_x_continuous(name = ns[-i][[2]],
+        #                      breaks = vals[-i][[2]]) +
+        #   scale_y_continuous(name = ns[-i][[1]],
+        #                      breaks = vals[-i][[1]])
+      } else {
+        #
+        # figures[[i]] <- figures[[i]] +
+        #   xlab(ns[-i][[1]]) +
+        #   ylab(ns[-i][[2]])
       }
 
     }

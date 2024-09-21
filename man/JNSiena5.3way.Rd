@@ -27,7 +27,8 @@ JNSiena5.3way(
   color_values = "grey40",
   color_grid = "black",
   grid_density = 0.01,
-  grid_spacing = 0.1
+  grid_spacing = 0.1,
+  g_title = TRUE
 )
 }
 \arguments{
@@ -60,10 +61,29 @@ theta2 and theta3.}
 of the multiplicative interaction of the effects identified as
 theta1, theta2 and theta3.}
 
+\item{control_fdr}{Logical (T/F). Should the program output moderated
+significance results using Bonferroni-Holm-adjusted p-value
+criteria? Default= FALSE.}
+
 \item{alpha}{Number (default = 0.05) corresponding the 2-tailed significance
 level used to calculate whether a moderated effect is significant for a
 given value (for points in theta1vals, theta2vals, and theta3vals)
 ranges.}
+
+\item{color_low}{Color to use in heat maps of 3-way results for the low end of
+the moderated parameter values.}
+
+\item{color_high}{Color to use in heat maps of 3-way results for the high end
+of the moderated parameter values.}
+
+\item{color_values}{Color to use in heat maps of 3-way results for actual
+numerical values. This option appears not to be implemented yet.}
+
+\item{color_grid}{Color of the grid in the plot.}
+
+\item{grid_density}{(Default 0.01) How many values per unit area in the grid?}
+
+\item{grid_spacing}{(Default 0.1) How far apart should the gridlines be?}
 
 \item{theta1vals}{A vector of numerical values of effect 1 for which raw and
 B-H-adjusted significance should be obtained, applying both to
@@ -78,6 +98,11 @@ moderator (in the 1st output table).}
 \item{theta3vals}{(Default NULL) A vector of numerical values of effect 3
 for which significance should be obtained, applying both to
 effect 3 as a predictor and as a moderator.}
+
+\item{roundres}{Number of significant digits in output. Default = 3.}
+
+\item{gtitle}{(Default TRUE) Logical; add the primary predictor as a
+left-justified  title to the graph?}
 }
 \value{
 A list of 5 elements.

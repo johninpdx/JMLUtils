@@ -394,23 +394,25 @@ JNSiena.2way <- function(siena07out, # siena07 output
 #' @param theta3vals (Default NULL) A vector of numerical values of effect 3
 #'     for which significance should be obtained, applying both to
 #'     effect 3 as a predictor and as a moderator.
-#' @control_fdr Logical (T/F). Should the program output moderated
+#' @param control_fdr Logical (T/F). Should the program output moderated
 #'     significance results using Bonferroni-Holm-adjusted p-value
 #'     criteria? Default= FALSE.
 #' @param alpha Number (default = 0.05) corresponding the 2-tailed significance
 #'     level used to calculate whether a moderated effect is significant for a
 #'     given value (for points in theta1vals, theta2vals, and theta3vals)
 #'     ranges.
-#' @roundres Number of significant digits in output. Default = 3.
-#' @color_low Color to use in heat maps of 3-way results for the low end of
+#' @param roundres Number of significant digits in output. Default = 3.
+#' @param color_low Color to use in heat maps of 3-way results for the low end of
 #'     the moderated parameter values.
-#' @color_high Color to use in heat maps of 3-way results for the high end
+#' @param color_high Color to use in heat maps of 3-way results for the high end
 #'     of the moderated parameter values.
-#' @color_values Color to use in heat maps of 3-way results for actual
+#' @param color_values Color to use in heat maps of 3-way results for actual
 #'     numerical values. This option appears not to be implemented yet.
-#' @color_grid Color of the grid in the plot.
-#' @grid_density (Default 0.01) How many values per unit area in the grid?
-#' @grid_spacing (Default 0.1) How far apart should the gridlines be?
+#' @param color_grid Color of the grid in the plot.
+#' @param grid_density (Default 0.01) How many values per unit area in the grid?
+#' @param grid_spacing (Default 0.1) How far apart should the gridlines be?
+#' @param gtitle (Default TRUE) Logical; add the primary predictor as a
+#'     left-justified  title to the graph?
 #' @return A list of 5 elements.
 #'     \enumerate{
 #'        \item{1. *thetas* Three matrices of the predicted theta values
@@ -451,7 +453,8 @@ JNSiena5.3way <- function(siena07out,
                      color_values = 'grey40',
                      color_grid = 'black',
                      grid_density = 0.01,
-                     grid_spacing = 0.1) {
+                     grid_spacing = 0.1,
+                     g_title = TRUE) {
 
 
   library(ggplot2)
@@ -711,11 +714,13 @@ JNSiena5.3way <- function(siena07out,
                           pattern_spacing = grid_spacing,
                           pattern_color = color_grid,
                           alpha = 0) +
-        ggtitle(ns[i]) +
         theme_bw() +
         guides(pattern = "none") +
         xlab(ns[-i][[1]]) +
         ylab(ns[-i][[2]])
+      if(g_title){
+        figures[[i]] <- figures[[i]] +  ggtitle(ns[i])
+      }
 
       if (all(c(length(theta1Vals) < 8,
                 length(theta3Vals) < 8,

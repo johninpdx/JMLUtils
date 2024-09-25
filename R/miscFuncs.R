@@ -178,30 +178,30 @@ getRSFit <- function(fitObj, alpha=.05, tails=2){
 
 
 #FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-#  >> getglmmTMFit <<
+#  >> getglmmTMBFit <<
 #______________________________________________________________________________
 #' Pulls glmmTMB model results with t and p-vals
 #'
-#' @description Extracts effect names, effect types,
-#'   betas (estimated parameters) and standard errors from a
-#'   glmmTMB object, then calculates t-statistics and one or two-tailed
-#'   p-values for each effect.
-#' @details Uses a version of JMLUtils::pValT (pvT) which does not output
-#'   anything, just calculates 1 or 2-tailed p-vals.
-#' @param fitObj A glmmTMB 'glmmTMB' object (output from glmmTMB)
-#' @param pVal Logical: if TRUE (default), calculates the t-ratio and
-#'   normal-distribution p-value (1 or 2 tailed depending on the 'tails'
-#'   parameter) for each effect.
+#' @description Extracts effect numbers, effect types, effect names,
+#'   thetas (estimated parameters) and standard errors from a
+#'   sientFit object, then calculates t-statistics, one or two-tailed
+#'   p-values, and (if tails = 2) an alpha-level confidence interval
+#'   for each effect. The alpha level is also ouput, for later reference.
+#' @param fitObj An RSiena 'sienaFit' object (output from siena07)
+#' @param fxNames A character vector the same length as the total number
+#'   of fixed effects in the model. For the future: These names must
+#'   be available somewhere, but I can't find them in the fitObj so far, so
+#'   they have to be entered manually. (This is really fine, though, as
+#'   usually you would want custom row names in any published table.)
+#' @param alpha A number (Default=.05) to use for creating confidence
+#'   intervals around the parameter
 #' @param tails Numeric: default is 2; enter 1 if 1-tailed pval preferred.
 #'
-#' @return A tibble with the 7 columns described earlier.
+#' @return A tibble with 8 columns (if tails = 1) or 10 columns (if tails
+#'   =2; only in this case are alpha-level CIs calculated and output, as
+#'   well as alpha itself).
 #' @export
-getglmmTMBFit <- function(fitObj, pVal=TRUE, tails=2){
-  #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  cat("This function not yet implemented")
-  stop()
-  #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
+getglmmTMBFit <- function(fitObj, fxNames, alpha=.05, tails=2){
   if (class(fitObj) != "glmmTMB"){
     cat("\nERROR: Input object is not class glmmTMB")
     stop()
@@ -211,19 +211,44 @@ getglmmTMBFit <- function(fitObj, pVal=TRUE, tails=2){
     cat("\nWarning: tails not 1 or 2; 2-tailed is assumed")
     tails <- 2
   }
-  col1.fxNames <- fitObj$requestedEffects$effectName
-  col3.theta <- fitObj$theta
-  col4.sErr <- fitObj$se
-  col5.tStat <- fitObj$theta/fitObj$se
-  col6.pVal <- pvT(fitObj$theta, col4.sErr, tails)
-  col7.tails <- rep(tails, length(fitObj$requestedEffects$shortName))
+
+  nParms <- length(fitObj$fit$par)-2
+
+  if(length(fxNames) != nParms){
+    cat("Error: length of fxNames should be: ",nParms)
+    stop()
+  }
+
+  col1.nbrFx <- 1:nParms
+  col2.fxNames <- fxNames
+  col3.beta <- fitObj$fit$par[1:nParms] #Ignore the last 2
+  col4.sErr <- diag(fitObj$sdr$cov.fixed)[1:nParms] %>% sqrt()
+  col5.tStat = col3.beta/col4.sErr
+  col6.pVal <- pvT(col3.beta, col4.sErr, tails)
+  col7.tails <- rep(tails, nParms)
+  #Calculate CI based on pVal and tails parameters
+  if(tails == 2){
+    CIval <- format(round((1-alpha)*100,2),digits=2)
+    upperCI = col3.beta + (col4.sErr * abs(qnorm(alpha/2)))
+    lowerCI = col3.beta - (col4.sErr * abs(qnorm(alpha/2)))
+    col8.CI <- paste0("[", format(round(lowerCI,2),nsmall=2),
+                      ",", format(round(upperCI,2),nsmall=2),"]" )
+  }else{
+    cat("\nWarning: tails !=2, confidence intervals not output.")
+  }
   outTbl <- tibble(Number = col1.nbrFx,
                    Effect = col2.fxNames,
-                   Parameter = col3.theta,
+                   Parameter = col3.beta,
                    SE = col4.sErr,
                    tStat = col5.tStat,
                    PVal = col6.pVal,
                    tails = tails)
+  if(tails == 2){
+    outTbl <- outTbl |>
+      mutate(CI = col8.CI) |>
+      mutate(alpha = alpha)
+    names(outTbl)[[8]] <- paste0(CIval, "% CI")
+  }
   return(outTbl)
 }
 

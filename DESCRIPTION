@@ -1,7 +1,7 @@
 Package: JMLUtils
 Type: Package
 Title: Wrappers for R administration, general statistics, data management
-Version: 1.9.0
+Version: 1.9.1
 Authors@R: person("John", "Light", email = "jlight@ori.org",
     role = c("aut", "cre"))
 Description: Wraps procedures for R administration (e.g. saving and restoring

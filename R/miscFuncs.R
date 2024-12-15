@@ -184,7 +184,7 @@ getRSFit <- function(fitObj, alpha=.05, tails=2){
 #'
 #' @description Extracts effect numbers, effect types, effect names,
 #'   thetas (estimated parameters) and standard errors from a
-#'   sientFit object, then calculates t-statistics, one or two-tailed
+#'   glmmTMB object, then calculates t-statistics, one or two-tailed
 #'   p-values, and (if tails = 2) an alpha-level confidence interval
 #'   for each effect. The alpha level is also ouput, for later reference.
 #' @param fitObj An RSiena 'sienaFit' object (output from siena07)

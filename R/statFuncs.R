@@ -463,7 +463,7 @@ JNSiena5.3way <- function(siena07out,
   library(scales)
 
   if (class(siena07out) != 'sienaFit') {
-    stop('sienaout needs to be a sienaFit object created by siena07().')
+    stop('sien07aout needs to be a sienaFit object created by siena07().')
   }
 
   sn <- siena07out$effects$effectName

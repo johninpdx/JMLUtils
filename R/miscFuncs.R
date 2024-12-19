@@ -211,8 +211,11 @@ getglmmTMBFit <- function(fitObj, fxNames, alpha=.05, tails=2){
     cat("\nWarning: tails not 1 or 2; 2-tailed is assumed")
     tails <- 2
   }
-
-  nParms <- length(fitObj$fit$par)-2
+  #The fit object has a couple of extraneous parameters; this statement
+  #ensures that only the betas from both parts of the model are obtained
+  parms <- fitObj$fit$par[names(fitObj$fit$par) == "beta" |
+                            names(fitObj$fit$par) == "betazi"]
+  nParms <- length(parms)
 
   if(length(fxNames) != nParms){
     cat("Error: length of fxNames should be: ",nParms)

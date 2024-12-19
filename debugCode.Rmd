@@ -3,9 +3,13 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-PSQIScore
 ```{r}
-xx <- readRDS("PSQRaw.rds")
+library(JMLUtils)
+```
+
+
+```{r}
+xxz <- JMLUtils::EfxList(zinb1.fm3x)
 ```
 
 ```{r}

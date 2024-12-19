@@ -4,27 +4,31 @@
 \alias{getglmmTMBFit}
 \title{Pulls glmmTMB model results with t and p-vals}
 \usage{
-getglmmTMBFit(fitObj, pVal = TRUE, tails = 2)
+getglmmTMBFit(fitObj, fxNames, alpha = 0.05, tails = 2)
 }
 \arguments{
-\item{fitObj}{A glmmTMB 'glmmTMB' object (output from glmmTMB)}
+\item{fitObj}{An RSiena 'sienaFit' object (output from siena07)}
 
-\item{pVal}{Logical: if TRUE (default), calculates the t-ratio and
-normal-distribution p-value (1 or 2 tailed depending on the 'tails'
-parameter) for each effect.}
+\item{fxNames}{A character vector the same length as the total number
+of fixed effects in the model. For the future: These names must
+be available somewhere, but I can't find them in the fitObj so far, so
+they have to be entered manually. (This is really fine, though, as
+usually you would want custom row names in any published table.)}
+
+\item{alpha}{A number (Default=.05) to use for creating confidence
+intervals around the parameter}
 
 \item{tails}{Numeric: default is 2; enter 1 if 1-tailed pval preferred.}
 }
 \value{
-A tibble with the 7 columns described earlier.
+A tibble with 8 columns (if tails = 1) or 10 columns (if tails
+  =2; only in this case are alpha-level CIs calculated and output, as
+  well as alpha itself).
 }
 \description{
-Extracts effect names, effect types,
-  betas (estimated parameters) and standard errors from a
-  glmmTMB object, then calculates t-statistics and one or two-tailed
-  p-values for each effect.
-}
-\details{
-Uses a version of JMLUtils::pValT (pvT) which does not output
-  anything, just calculates 1 or 2-tailed p-vals.
+Extracts effect numbers, effect types, effect names,
+  thetas (estimated parameters) and standard errors from a
+  glmmTMB object, then calculates t-statistics, one or two-tailed
+  p-values, and (if tails = 2) an alpha-level confidence interval
+  for each effect. The alpha level is also ouput, for later reference.
 }

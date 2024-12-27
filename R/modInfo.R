@@ -1,6 +1,6 @@
 
 # FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-# >> bEfxList <<
+# >> EfxList <<
 #______________________________________________________________________________
 #' Creates a table of the terms in a regression output object (of class lme or
 #' glmmTMB)

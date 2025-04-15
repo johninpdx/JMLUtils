@@ -10,10 +10,9 @@ getglmmTMBFit(fitObj, fxNames, alpha = 0.05, tails = 2)
 \item{fitObj}{An RSiena 'sienaFit' object (output from siena07)}
 
 \item{fxNames}{A character vector the same length as the total number
-of fixed effects in the model. For the future: These names must
-be available somewhere, but I can't find them in the fitObj so far, so
-they have to be entered manually. (This is really fine, though, as
-usually you would want custom row names in any published table.)}
+of fixed effects in the model. For the future: These names are usually
+named elements of the parameter vector. However, you'd usually want
+custom row names in any published table.}
 
 \item{alpha}{A number (Default=.05) to use for creating confidence
 intervals around the parameter}

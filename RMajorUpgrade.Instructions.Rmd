@@ -3,6 +3,9 @@ title: "Draft of Package Upgrade for New Major R Version"
 output: html_notebook
 ---
 
+NOTE: for a complete set of instructions, see the .docx file with the same
+name as this .Rmd
+
 Here is the procedure:
 1. With the old version of R running (either before you install the new
    version, or after but selecting the old version in Tools/Project Options),

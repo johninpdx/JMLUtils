@@ -189,10 +189,9 @@ getRSFit <- function(fitObj, alpha=.05, tails=2){
 #'   for each effect. The alpha level is also ouput, for later reference.
 #' @param fitObj An RSiena 'sienaFit' object (output from siena07)
 #' @param fxNames A character vector the same length as the total number
-#'   of fixed effects in the model. For the future: These names must
-#'   be available somewhere, but I can't find them in the fitObj so far, so
-#'   they have to be entered manually. (This is really fine, though, as
-#'   usually you would want custom row names in any published table.)
+#'   of fixed effects in the model. For the future: These names are usually
+#'   named elements of the parameter vector. However, you'd usually want
+#'   custom row names in any published table.
 #' @param alpha A number (Default=.05) to use for creating confidence
 #'   intervals around the parameter
 #' @param tails Numeric: default is 2; enter 1 if 1-tailed pval preferred.
@@ -226,7 +225,7 @@ getglmmTMBFit <- function(fitObj, fxNames, alpha=.05, tails=2){
   col2.fxNames <- fxNames
   col3.beta <- fitObj$fit$par[1:nParms] #Ignore the last 2
   col4.sErr <- diag(fitObj$sdr$cov.fixed)[1:nParms] %>% sqrt()
-  col5.tStat = col3.beta/col4.sErr
+  col5.tStat <- col3.beta/col4.sErr
   col6.pVal <- pvT(col3.beta, col4.sErr, tails)
   col7.tails <- rep(tails, nParms)
   #Calculate CI based on pVal and tails parameters

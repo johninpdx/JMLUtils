@@ -1511,7 +1511,7 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
@@ -1537,7 +1537,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Code');
+      showCodeText.text('Show');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -1753,46 +1753,75 @@ Version</h1>
 
 
 <!-- rnb-text-begin -->
+<p>NOTE: for a complete set of instructions, see the .docx file with the
+same name as this .Rmd</p>
 <p>Here is the procedure: 1. With the old version of R running (either
 before you install the new version, or after but selecting the old
 version in Tools/Project Options), run this next chunk.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0dldHMgY2hhcmFjdGVyIHZlY3RvciBvZiBhbGwgaW5zdGFsbGVkIHBhY2thZ2UgbmFtZXMgXG5wYWNrcyA8LSBpbnN0YWxsZWQucGFja2FnZXMoKVssMV0gXG4jV3JpdGUgbmFtZWQgY2hhcmFjdGVyIHZlY3RvciBpbnRvIC5yIGZpbGVcbnNpbmsoXCJwYWNrczJtb3ZlLnJcIiwgYXBwZW5kPUYsIHNwbGl0PUYpXG5kcHV0KHBhY2tzKVxuc2luaygpXG5gYGAifQ== -->
-<pre class="r"><code>#Gets character vector of all installed package names 
+<!-- rnb-output-begin eyJkYXRhIjoiXG48IS0tIHJuYi1zb3VyY2UtYmVnaW4gZXlKa1lYUmhJam9pWUdCZ2NseHVZR0JnY2x4dUkwZGxkSE1nWTJoaGNtRmpkR1Z5SUhabFkzUnZjaUJ2WmlCaGJHd2dhVzV6ZEdGc2JHVmtJSEJoWTJ0aFoyVWdibUZ0WlhNZ1hHNXdZV05yY3lBOExTQnBibk4wWVd4c1pXUXVjR0ZqYTJGblpYTW9LVnNzTVYwZ1hHNGpWM0pwZEdVZ2JtRnRaV1FnWTJoaGNtRmpkR1Z5SUhabFkzUnZjaUJwYm5SdklDNXlJR1pwYkdWY2JuTnBibXNvWEZ4d1lXTnJjekp0YjNabExuSmNYQ3dnWVhCd1pXNWtQVVlzSUhOd2JHbDBQVVlwWEc1a2NIVjBLSEJoWTJ0ektWeHVjMmx1YXlncFhHNWdZR0JjYm1CZ1lDSjkgLS0+XG5cbmBgYHJcbmBgYHJcbiNHZXRzIGNoYXJhY3RlciB2ZWN0b3Igb2YgYWxsIGluc3RhbGxlZCBwYWNrYWdlIG5hbWVzIFxucGFja3MgPC0gaW5zdGFsbGVkLnBhY2thZ2VzKClbLDFdIFxuI1dyaXRlIG5hbWVkIGNoYXJhY3RlciB2ZWN0b3IgaW50byAuciBmaWxlXG5zaW5rKFxccGFja3MybW92ZS5yXFwsIGFwcGVuZD1GLCBzcGxpdD1GKVxuZHB1dChwYWNrcylcbnNpbmsoKVxuYGBgXG5gYGBcblxuPCEtLSBybmItc291cmNlLWVuZCAtLT5cbiJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuI0dldHMgY2hhcmFjdGVyIHZlY3RvciBvZiBhbGwgaW5zdGFsbGVkIHBhY2thZ2UgbmFtZXMgXG5wYWNrcyA8LSBpbnN0YWxsZWQucGFja2FnZXMoKVssMV0gXG4jV3JpdGUgbmFtZWQgY2hhcmFjdGVyIHZlY3RvciBpbnRvIC5yIGZpbGVcbnNpbmsoXFxwYWNrczJtb3ZlLnJcXCwgYXBwZW5kPUYsIHNwbGl0PUYpXG5kcHV0KHBhY2tzKVxuc2luaygpXG5gYGBcbmBgYCJ9 -->
+<pre class="r"><code>```r
+#Gets character vector of all installed package names 
 packs &lt;- installed.packages()[,1] 
 #Write named character vector into .r file
-sink(&quot;packs2move.r&quot;, append=F, split=F)
+sink(\packs2move.r\, append=F, split=F)
 dput(packs)
 sink()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>This function saves the names of all the packages in library of the
-old version. The file containing those names is located in the folder
-selected by the ‘folderLocation’ function below; it’s hard-coded for
-which machine you’re on.</p>
-<ol start="2" style="list-style-type: decimal">
-<li><p>Install (if necessary) and activate the new version of R.
-Normally the new version will boot up automatically after it’s
-installed, but you can also manually select in in the Tools/Project
-Options menu).</p></li>
-<li><p>Open an R GUI window, being sure you are using the new version of
-R. Then load JMLUtils. (DO NOT do this from RStudio!) Then run the
-function JMLUtils::restorePkgLib().</p></li>
-</ol>
-<p>If there are a lot of packages, the recompliation process will take a
-good while to finish.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FuZGlkYXRlcyA8LSBjKCBTeXMuZ2V0ZW52KFwiUl9QUk9GSUxFXCIpLFxuICAgICAgICAgICAgICAgICBmaWxlLnBhdGgoU3lzLmdldGVudihcIlJfSE9NRVwiKSwgXCJldGNcIiwgXCJScHJvZmlsZS5zaXRlXCIpLFxuICAgICAgICAgICAgICAgICBTeXMuZ2V0ZW52KFwiUl9QUk9GSUxFX1VTRVJcIiksXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChnZXR3ZCgpLCBcIi5ScHJvZmlsZVwiKSApXG5cbkZpbHRlcihmaWxlLmV4aXN0cywgY2FuZGlkYXRlcylcbmBgYCJ9 -->
-<pre class="r"><code>candidates &lt;- c( Sys.getenv(&quot;R_PROFILE&quot;),
-                 file.path(Sys.getenv(&quot;R_HOME&quot;), &quot;etc&quot;, &quot;Rprofile.site&quot;),
-                 Sys.getenv(&quot;R_PROFILE_USER&quot;),
-                 file.path(getwd(), &quot;.Rprofile&quot;) )
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+   This function saves the names of all the packages in library of the old
+   version. The file containing those names is located in the folder 
+   selected by the &#39;folderLocation&#39; function below; it&#39;s hard-coded for
+   which machine you&#39;re on.
+
+2. Install (if necessary) and activate the new version of R. Normally the new
+   version will boot up automatically after it&#39;s installed, but you can also
+   manually select in in the Tools/Project Options menu).
+
+3. Open an R GUI window, being sure you are using the new version of R. 
+   Then load JMLUtils. (DO NOT do this from RStudio!)
+   Then run the function JMLUtils::restorePkgLib().
+   
+If there are a lot of packages, the recompliation process will take a good
+while to finish.
+
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG48IS0tIHJuYi1zb3VyY2UtYmVnaW4gZXlKa1lYUmhJam9pWUdCZ2NseHVZR0JnY2x4dVkyRnVaR2xrWVhSbGN5QThMU0JqS0NCVGVYTXVaMlYwWlc1MktGeGNVbDlRVWs5R1NVeEZYRndwTEZ4dUlDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNCbWFXeGxMbkJoZEdnb1UzbHpMbWRsZEdWdWRpaGNYRkpmU0U5TlJWeGNLU3dnWEZ4bGRHTmNYQ3dnWEZ4U2NISnZabWxzWlM1emFYUmxYRndwTEZ4dUlDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNCVGVYTXVaMlYwWlc1MktGeGNVbDlRVWs5R1NVeEZYMVZUUlZKY1hDa3NYRzRnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJR1pwYkdVdWNHRjBhQ2huWlhSM1pDZ3BMQ0JjWEM1U2NISnZabWxzWlZ4Y0tTQXBYRzVjYmtacGJIUmxjaWhtYVd4bExtVjRhWE4wY3l3Z1kyRnVaR2xrWVhSbGN5bGNibUJnWUZ4dVlHQmdJbjA9IC0tPlxuXG5gYGByXG5gYGByXG5jYW5kaWRhdGVzIDwtIGMoIFN5cy5nZXRlbnYoXFxSX1BST0ZJTEVcXCksXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChTeXMuZ2V0ZW52KFxcUl9IT01FXFwpLCBcXGV0Y1xcLCBcXFJwcm9maWxlLnNpdGVcXCksXG4gICAgICAgICAgICAgICAgIFN5cy5nZXRlbnYoXFxSX1BST0ZJTEVfVVNFUlxcKSxcbiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKGdldHdkKCksIFxcLlJwcm9maWxlXFwpIClcblxuRmlsdGVyKGZpbGUuZXhpc3RzLCBjYW5kaWRhdGVzKVxuYGBgXG5gYGBcblxuPCEtLSBybmItc291cmNlLWVuZCAtLT5cbiJ9 --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY2FuZGlkYXRlcyA8LSBjKCBTeXMuZ2V0ZW52KFxcUl9QUk9GSUxFXFwpLFxuICAgICAgICAgICAgICAgICBmaWxlLnBhdGgoU3lzLmdldGVudihcXFJfSE9NRVxcKSwgXFxldGNcXCwgXFxScHJvZmlsZS5zaXRlXFwpLFxuICAgICAgICAgICAgICAgICBTeXMuZ2V0ZW52KFxcUl9QUk9GSUxFX1VTRVJcXCksXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChnZXR3ZCgpLCBcXC5ScHJvZmlsZVxcKSApXG5cbkZpbHRlcihmaWxlLmV4aXN0cywgY2FuZGlkYXRlcylcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+candidates &lt;- c( Sys.getenv(\R_PROFILE\),
+                 file.path(Sys.getenv(\R_HOME\), \etc\, \Rprofile.site\),
+                 Sys.getenv(\R_PROFILE_USER\),
+                 file.path(getwd(), \.Rprofile\) )
 
 Filter(file.exists, candidates)</code></pre>
+<p>```</p>
 <!-- rnb-source-end -->
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Additional Notes:</p>
@@ -1808,7 +1837,7 @@ In that case, you’ll need to install that first, manually, and then go
 from there. Check this link: <a href="https://www.r-project.org/nosvn/pandoc/devtools.html" class="uri">https://www.r-project.org/nosvn/pandoc/devtools.html</a></p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRyYWZ0IG9mIFBhY2thZ2UgVXBncmFkZSBmb3IgTmV3IE1ham9yIFIgVmVyc2lvbiINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCkhlcmUgaXMgdGhlIHByb2NlZHVyZToNCjEuIFdpdGggdGhlIG9sZCB2ZXJzaW9uIG9mIFIgcnVubmluZyAoZWl0aGVyIGJlZm9yZSB5b3UgaW5zdGFsbCB0aGUgbmV3DQogICB2ZXJzaW9uLCBvciBhZnRlciBidXQgc2VsZWN0aW5nIHRoZSBvbGQgdmVyc2lvbiBpbiBUb29scy9Qcm9qZWN0IE9wdGlvbnMpLA0KICAgcnVuIHRoaXMgbmV4dCBjaHVuay4NCg0KYGBge3J9DQpKTUxVdGlsczo6YWRtLnNhdmVQa2dMaWIoKQ0KYGBgDQoNCiAgIFRoaXMgZnVuY3Rpb24gc2F2ZXMgdGhlIG5hbWVzIG9mIGFsbCB0aGUgcGFja2FnZXMgaW4gbGlicmFyeSBvZiB0aGUgb2xkDQogICB2ZXJzaW9uLiBUaGUgZmlsZSBjb250YWluaW5nIHRob3NlIG5hbWVzIGlzIGxvY2F0ZWQgaW4gdGhlIGZvbGRlciANCiAgIHNlbGVjdGVkIGJ5IHRoZSAnZm9sZGVyTG9jYXRpb24nIGZ1bmN0aW9uIGJlbG93OyBpdCdzIGhhcmQtY29kZWQgZm9yDQogICB3aGljaCBtYWNoaW5lIHlvdSdyZSBvbi4NCg0KMi4gSW5zdGFsbCAoaWYgbmVjZXNzYXJ5KSBhbmQgYWN0aXZhdGUgdGhlIG5ldyB2ZXJzaW9uIG9mIFIuIE5vcm1hbGx5IHRoZSBuZXcNCiAgIHZlcnNpb24gd2lsbCBib290IHVwIGF1dG9tYXRpY2FsbHkgYWZ0ZXIgaXQncyBpbnN0YWxsZWQsIGJ1dCB5b3UgY2FuIGFsc28NCiAgIG1hbnVhbGx5IHNlbGVjdCBpbiBpbiB0aGUgVG9vbHMvUHJvamVjdCBPcHRpb25zIG1lbnUpLg0KDQozLiBPcGVuIGFuIFIgR1VJIHdpbmRvdywgYmVpbmcgc3VyZSB5b3UgYXJlIHVzaW5nIHRoZSBuZXcgdmVyc2lvbiBvZiBSLiANCiAgIFRoZW4gbG9hZCBKTUxVdGlscy4gKERPIE5PVCBkbyB0aGlzIGZyb20gUlN0dWRpbyEpDQogICBUaGVuIHJ1biB0aGUgZnVuY3Rpb24gSk1MVXRpbHM6OnJlc3RvcmVQa2dMaWIoKS4NCiAgIA0KSWYgdGhlcmUgYXJlIGEgbG90IG9mIHBhY2thZ2VzLCB0aGUgcmVjb21wbGlhdGlvbiBwcm9jZXNzIHdpbGwgdGFrZSBhIGdvb2QNCndoaWxlIHRvIGZpbmlzaC4NCg0KDQoNCmBgYHtyfQ0KY2FuZGlkYXRlcyA8LSBjKCBTeXMuZ2V0ZW52KCJSX1BST0ZJTEUiKSwNCiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKFN5cy5nZXRlbnYoIlJfSE9NRSIpLCAiZXRjIiwgIlJwcm9maWxlLnNpdGUiKSwNCiAgICAgICAgICAgICAgICAgU3lzLmdldGVudigiUl9QUk9GSUxFX1VTRVIiKSwNCiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKGdldHdkKCksICIuUnByb2ZpbGUiKSApDQoNCkZpbHRlcihmaWxlLmV4aXN0cywgY2FuZGlkYXRlcykNCmBgYA0KDQpBZGRpdGlvbmFsIE5vdGVzOg0KDQpJZiBuZWNlc3NhcnkgKHVzdWFsbHkgb25seSBpZiBhIG1ham9yIFIgdXBncmFkZSwgZS5nLiBmcm9tIHYuIDQueCB0byB2ZXJzaW9uIDUueA0KIGV0Yy4gYmUgc3VyZSB0byB1cGdyYWRlIHlvdXIgZGV2ZWxvcG1lbnQgdG9vbHMsIHNvDQogeW91J2xsIGJlIGFibGUgdG8gYnVpbGQgYWxsIHRoZSBwYWNrYWdlcyBpbiB0aGUgbmV3IFIgdmVyc2lvbi4NCiBzZWUgaGVyZSBmb3IgZG9jOg0KaHR0cHM6Ly9zdXBwb3J0LnJzdHVkaW8uY29tL2hjL2VuLXVzL2FydGljbGVzLzIwMDQ4NjQ5OC1QYWNrYWdlLURldmVsb3BtZW50LVByZXJlcXVpc2l0ZXMNCiBCYXNpY2FsbHkgaWYgdGhlcmUgaXMgYSBuZXcgdmVyc2lvbiBvZiBSVG9vbHMsIGRvd25sb2FkIGFuZCBpbnN0YWxsIGZyb20gaGVyZToNCiBodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL3dpbmRvd3MvUnRvb2xzLy4NClRoZW4gbWFrZSBzdXJlIGl0J3Mgb24gc3lzdGVtIFBBVEggcGVyIGRvYyByZWNvbW1lbmRhdGlvbnMgDQpJIGRvbid0IHRoaW5rIHlvdSBuZWVkIGRldnRvb2xzIGF2YWlsYWJsZSBpbiB0aGUgbmV3IHZlcnNpb24gdG8gbWFrZSB0aGlzIHdvcmssIA0KIGJ1dCB5b3UgbWlnaHQuIEluIHRoYXQgY2FzZSwgeW91J2xsIG5lZWQgdG8gaW5zdGFsbCB0aGF0IGZpcnN0LCBtYW51YWxseSwgDQogYW5kIHRoZW4gZ28gZnJvbSB0aGVyZS4gQ2hlY2sgdGhpcyBsaW5rOg0KaHR0cHM6Ly93d3cuci1wcm9qZWN0Lm9yZy9ub3N2bi9wYW5kb2MvZGV2dG9vbHMuaHRtbA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRyYWZ0IG9mIFBhY2thZ2UgVXBncmFkZSBmb3IgTmV3IE1ham9yIFIgVmVyc2lvbiINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCk5PVEU6IGZvciBhIGNvbXBsZXRlIHNldCBvZiBpbnN0cnVjdGlvbnMsIHNlZSB0aGUgLmRvY3ggZmlsZSB3aXRoIHRoZSBzYW1lDQpuYW1lIGFzIHRoaXMgLlJtZA0KDQpIZXJlIGlzIHRoZSBwcm9jZWR1cmU6DQoxLiBXaXRoIHRoZSBvbGQgdmVyc2lvbiBvZiBSIHJ1bm5pbmcgKGVpdGhlciBiZWZvcmUgeW91IGluc3RhbGwgdGhlIG5ldw0KICAgdmVyc2lvbiwgb3IgYWZ0ZXIgYnV0IHNlbGVjdGluZyB0aGUgb2xkIHZlcnNpb24gaW4gVG9vbHMvUHJvamVjdCBPcHRpb25zKSwNCiAgIHJ1biB0aGlzIG5leHQgY2h1bmsuDQoNCmBgYHtyfQ0KSk1MVXRpbHM6OmFkbS5zYXZlUGtnTGliKCkNCmBgYA0KDQogICBUaGlzIGZ1bmN0aW9uIHNhdmVzIHRoZSBuYW1lcyBvZiBhbGwgdGhlIHBhY2thZ2VzIGluIGxpYnJhcnkgb2YgdGhlIG9sZA0KICAgdmVyc2lvbi4gVGhlIGZpbGUgY29udGFpbmluZyB0aG9zZSBuYW1lcyBpcyBsb2NhdGVkIGluIHRoZSBmb2xkZXIgDQogICBzZWxlY3RlZCBieSB0aGUgJ2ZvbGRlckxvY2F0aW9uJyBmdW5jdGlvbiBiZWxvdzsgaXQncyBoYXJkLWNvZGVkIGZvcg0KICAgd2hpY2ggbWFjaGluZSB5b3UncmUgb24uDQoNCjIuIEluc3RhbGwgKGlmIG5lY2Vzc2FyeSkgYW5kIGFjdGl2YXRlIHRoZSBuZXcgdmVyc2lvbiBvZiBSLiBOb3JtYWxseSB0aGUgbmV3DQogICB2ZXJzaW9uIHdpbGwgYm9vdCB1cCBhdXRvbWF0aWNhbGx5IGFmdGVyIGl0J3MgaW5zdGFsbGVkLCBidXQgeW91IGNhbiBhbHNvDQogICBtYW51YWxseSBzZWxlY3QgaW4gaW4gdGhlIFRvb2xzL1Byb2plY3QgT3B0aW9ucyBtZW51KS4NCg0KMy4gT3BlbiBhbiBSIEdVSSB3aW5kb3csIGJlaW5nIHN1cmUgeW91IGFyZSB1c2luZyB0aGUgbmV3IHZlcnNpb24gb2YgUi4gDQogICBUaGVuIGxvYWQgSk1MVXRpbHMuIChETyBOT1QgZG8gdGhpcyBmcm9tIFJTdHVkaW8hKQ0KICAgVGhlbiBydW4gdGhlIGZ1bmN0aW9uIEpNTFV0aWxzOjpyZXN0b3JlUGtnTGliKCkuDQogICANCklmIHRoZXJlIGFyZSBhIGxvdCBvZiBwYWNrYWdlcywgdGhlIHJlY29tcGxpYXRpb24gcHJvY2VzcyB3aWxsIHRha2UgYSBnb29kDQp3aGlsZSB0byBmaW5pc2guDQoNCg0KDQpgYGB7cn0NCmNhbmRpZGF0ZXMgPC0gYyggU3lzLmdldGVudigiUl9QUk9GSUxFIiksDQogICAgICAgICAgICAgICAgIGZpbGUucGF0aChTeXMuZ2V0ZW52KCJSX0hPTUUiKSwgImV0YyIsICJScHJvZmlsZS5zaXRlIiksDQogICAgICAgICAgICAgICAgIFN5cy5nZXRlbnYoIlJfUFJPRklMRV9VU0VSIiksDQogICAgICAgICAgICAgICAgIGZpbGUucGF0aChnZXR3ZCgpLCAiLlJwcm9maWxlIikgKQ0KDQpGaWx0ZXIoZmlsZS5leGlzdHMsIGNhbmRpZGF0ZXMpDQpgYGANCg0KQWRkaXRpb25hbCBOb3RlczoNCg0KSWYgbmVjZXNzYXJ5ICh1c3VhbGx5IG9ubHkgaWYgYSBtYWpvciBSIHVwZ3JhZGUsIGUuZy4gZnJvbSB2LiA0LnggdG8gdmVyc2lvbiA1LngNCiBldGMuIGJlIHN1cmUgdG8gdXBncmFkZSB5b3VyIGRldmVsb3BtZW50IHRvb2xzLCBzbw0KIHlvdSdsbCBiZSBhYmxlIHRvIGJ1aWxkIGFsbCB0aGUgcGFja2FnZXMgaW4gdGhlIG5ldyBSIHZlcnNpb24uDQogc2VlIGhlcmUgZm9yIGRvYzoNCmh0dHBzOi8vc3VwcG9ydC5yc3R1ZGlvLmNvbS9oYy9lbi11cy9hcnRpY2xlcy8yMDA0ODY0OTgtUGFja2FnZS1EZXZlbG9wbWVudC1QcmVyZXF1aXNpdGVzDQogQmFzaWNhbGx5IGlmIHRoZXJlIGlzIGEgbmV3IHZlcnNpb24gb2YgUlRvb2xzLCBkb3dubG9hZCBhbmQgaW5zdGFsbCBmcm9tIGhlcmU6DQogaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi93aW5kb3dzL1J0b29scy8uDQpUaGVuIG1ha2Ugc3VyZSBpdCdzIG9uIHN5c3RlbSBQQVRIIHBlciBkb2MgcmVjb21tZW5kYXRpb25zIA0KSSBkb24ndCB0aGluayB5b3UgbmVlZCBkZXZ0b29scyBhdmFpbGFibGUgaW4gdGhlIG5ldyB2ZXJzaW9uIHRvIG1ha2UgdGhpcyB3b3JrLCANCiBidXQgeW91IG1pZ2h0LiBJbiB0aGF0IGNhc2UsIHlvdSdsbCBuZWVkIHRvIGluc3RhbGwgdGhhdCBmaXJzdCwgbWFudWFsbHksIA0KIGFuZCB0aGVuIGdvIGZyb20gdGhlcmUuIENoZWNrIHRoaXMgbGluazoNCmh0dHBzOi8vd3d3LnItcHJvamVjdC5vcmcvbm9zdm4vcGFuZG9jL2RldnRvb2xzLmh0bWwNCg0K</div>
 
 
 
